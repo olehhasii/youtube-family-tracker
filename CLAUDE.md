@@ -1,6 +1,14 @@
 ## Project
 
-Remake of the family-subscription-manager app. Read `.scratch/remake/spec.md` before planning or building anything: it holds the agreed scope, stack, design direction and the ticket list in `.scratch/remake/issues/`.
+A small personal app that tracks which friends sharing a YouTube Premium Family plan have paid, and for which months. It remakes https://github.com/olehhasii/family-subscription-manager with a richer UI and micro-interactions.
+
+- **Who uses it:** friends open a public **Board** (mostly on phones) to check their status; the **Admin** signs in on the same Board to record Payments and edit Members. There is no separate admin panel.
+- **Core idea:** Payments are a ledger of whole months with no amounts. Paid Months, the Due Date and each Member's Status are derived from the ledger, never stored. Use the terms in `GLOSSARY.md`; the rules and their reasons are in `docs/adr/`.
+- **Direction:** the old app's look made smoother: near-black neutrals, Inter, one centred card, a black pill "island" at the bottom for status, menu and toasts. Motion is the core of the experience, mobile-first but equally good on desktop. 3D (R3F) is an optional, lazy-loaded accent only.
+- **Stack:** Vite + React + TypeScript SPA, Tailwind v4, Motion, Base UI, TanStack Query, Supabase (free tier), deployed on Vercel. UA is the default language, EN second.
+- **Code layout:** `src/model/` holds the pure payment rules (test-first); `src/data/` is the only place that talks to Supabase; UI lives in `src/features/` and `src/ui/`.
+
+Read `.scratch/remake/spec.md` before planning or building: it holds the full scope and decisions. Work is tracked as tickets in `.scratch/remake/issues/`; take the lowest-numbered ticket that is unblocked and unresolved.
 
 ## Motion
 
