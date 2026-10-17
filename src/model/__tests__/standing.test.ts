@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { standing } from './standing'
+import { standing } from '../standing'
 import { dima, oleh, pay, sasha } from './testing'
 
 describe('standing', () => {

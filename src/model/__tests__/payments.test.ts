@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { deletablePayment, nextPaymentMonths } from './payments'
+import { deletablePayment, nextPaymentMonths } from '../payments'
 import { dima, pay, sasha } from './testing'
 
 describe('nextPaymentMonths', () => {

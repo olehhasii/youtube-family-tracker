@@ -1,5 +1,5 @@
 // Test helpers for src/model. Not part of the public surface.
-import type { Member, Payment } from './types'
+import type { Member, Payment } from '../types'
 
 export const sasha: Member = { id: 'sasha', name: 'Sasha', exempt: false }
 export const dima: Member = { id: 'dima', name: 'Dima', exempt: false }

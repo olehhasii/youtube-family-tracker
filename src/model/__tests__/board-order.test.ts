@@ -1,6 +1,6 @@
 import { expect, test } from 'vitest'
-import { boardOrder } from './board-order'
-import type { Status } from './types'
+import { boardOrder } from '../board-order'
+import type { Status } from '../types'
 
 const row = (name: string, status: Status) => ({ name, status })
 
