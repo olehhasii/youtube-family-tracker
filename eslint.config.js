@@ -19,4 +19,12 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // Only the data layer talks to Supabase (CLAUDE.md "Code layout")
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/data/**', '**/__tests__/**'], // tests may stub data internals at the network boundary
+    rules: {
+      'no-restricted-imports': ['error', { patterns: [{ group: ['@supabase/*'], message: 'Use the hooks from src/data instead.' }, { group: ['**/data/*'], message: 'Import from src/data (its index), not its internals.' }] }],
+    },
+  },
 ])

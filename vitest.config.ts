@@ -7,7 +7,7 @@ export default mergeConfig(
     test: {
       environment: 'jsdom',
       setupFiles: ['./src/test/setup.ts'],
-      exclude: [...configDefaults.exclude, 'supabase/**'], // database tests run via `npm run test:db`
+      exclude: [...configDefaults.exclude, 'supabase/**', '**/*.db.test.ts'], // database tests run via `npm run test:db`
     },
   }),
 )

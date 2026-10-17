@@ -1,5 +1,14 @@
 {
   "board": {
-    "empty": "No one here yet."
+    "empty": "No one here yet.",
+    "loading": "Loading…",
+    "error": "Couldn't load the Board. Try again."
+  },
+  "status": {
+    "paid": "Paid",
+    "dueSoon": "Due soon",
+    "overdue": "Overdue",
+    "unknown": "Unknown",
+    "exempt": "Exempt"
   }
 }
