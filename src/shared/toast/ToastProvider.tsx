@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { TOAST_MS } from '../../ui/motion'
-import { type Toast, ToastContext, type ToastOptions } from './toast'
+import { TOAST_MS } from '../lib/motion'
+import { type Toast, ToastContext, type ToastOptions } from './use-toast'
 
 let nextId = 0
 

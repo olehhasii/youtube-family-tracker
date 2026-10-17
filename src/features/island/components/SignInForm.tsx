@@ -1,11 +1,9 @@
-// What the island grows into for the Admin to sign in: email + password.
 import { type FormEvent, type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSignIn } from '../../data'
+import { useSignIn } from '../../../data/hooks/use-auth'
 
 type Props = {
   onSignedIn: () => void
-  /** The Back button, from the island so all its states share one. */
   back: ReactNode
 }
 

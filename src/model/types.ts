@@ -10,7 +10,6 @@ export type Member = {
   exempt: boolean
 }
 
-/** A Member paid for `months` whole months starting at `firstMonth`. */
 export type Payment = {
   id: string
   memberId: string
@@ -21,7 +20,7 @@ export type Payment = {
 
 export type Status = 'paid' | 'dueSoon' | 'overdue' | 'unknown' | 'exempt'
 
-/** A Member's standing on a given day. Only Members with Payments have a Due Date. */
+/** Only Members with Payments have a Due Date. */
 export type Standing =
   | { status: 'exempt' | 'unknown' }
   | {
@@ -36,7 +35,6 @@ export type Standing =
       monthsBehind: number
     }
 
-/** A Standing with a Due Date: Paid, Due Soon or Overdue. */
 export type DatedStanding = Extract<Standing, { dueDate: Day }>
 
 export const isDated = (standing: Standing): standing is DatedStanding => 'dueDate' in standing

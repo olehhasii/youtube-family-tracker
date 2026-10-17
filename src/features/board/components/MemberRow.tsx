@@ -1,26 +1,25 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { BoardRow } from '../../data'
-import { Avatar } from '../../ui/Avatar'
-import { RADIUS, STATUS_COLOR_TRANSITION, layoutSpring, rowEntrance } from '../../ui/motion'
-import type { StandingText } from './describe-standing'
-import { memberLayoutId } from './layout-ids'
-import { STATUS_COLOR } from './status-colors'
+import type { BoardRow } from '../../../data/board'
+import { Avatar } from '../../../shared/ui/Avatar'
+import { IconPlus } from '../../../shared/ui/icons'
+import { RADIUS, STATUS_COLOR_TRANSITION, layoutSpring, rowEntrance } from '../../../shared/lib/motion'
+import type { StandingText } from '../../../shared/lib/describe-standing'
+import { memberLayoutId } from '../helpers/layout-ids'
+import { STATUS_COLOR } from '../../../shared/lib/status-colors'
 import { StatusPill } from './StatusPill'
 
 type Props = {
   row: BoardRow
   wording: StandingText
   index: number
-  /** Take keyboard focus when shown, e.g. after this Member's card closes. */
   focusOnMount?: boolean
   onOpen: () => void
-  /** Shown to the Admin for Paying Members: opens the record-payment sheet. */
   onRecord?: () => void
 }
 
-/** One Member on the Board. Shares layout ids with DetailCard, so opening it grows the row into the card. */
+// shares layout ids with DetailCard, so opening it grows the row into the card
 export function MemberRow({ row: { member, standing }, wording, index, focusOnMount = false, onOpen, onRecord }: Props) {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
@@ -68,9 +67,3 @@ export function MemberRow({ row: { member, standing }, wording, index, focusOnMo
     </motion.li>
   )
 }
-
-const IconPlus = () => (
-  <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.25} strokeLinecap="round" aria-hidden>
-    <path d="M12 5v14M5 12h14" />
-  </svg>
-)

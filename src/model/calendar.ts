@@ -1,4 +1,3 @@
-// Calendar arithmetic on `Month` / `Day` strings. Internal to src/model.
 import type { Day, Month } from './types'
 
 const pad = (n: number) => String(n).padStart(2, '0')

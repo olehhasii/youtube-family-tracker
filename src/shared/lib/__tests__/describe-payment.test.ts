@@ -1,5 +1,5 @@
 import { expect, test } from 'vitest'
-import type { Payment } from '../../../model'
+import type { Payment } from '../../../model/types'
 import { describePaymentMonths, describeReceived } from '../describe-payment'
 
 const pay = (firstMonth: string, months: number, receivedOn = `${firstMonth}-03`): Payment => ({

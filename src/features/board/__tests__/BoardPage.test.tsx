@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import type { BoardTables } from '../../../data/board'
 import { deleteLatestPayment, fetchBoardTables, isSignedIn, recordPayment } from '../../../data/queries'
-import '../../../i18n'
+import '../../../i18n/index'
 import { renderWithProviders } from '../../../test/render'
-import { TOAST_MS } from '../../../ui/motion'
+import { TOAST_MS } from '../../../shared/lib/motion'
 import { BoardPage } from '../BoardPage'
 
 // Stand in for the network only; mapping, rules and rendering are real.

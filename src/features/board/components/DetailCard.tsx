@@ -1,15 +1,15 @@
 import { motion, useReducedMotion } from 'motion/react'
 import { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { BoardRow } from '../../data'
-import { isDated } from '../../model'
-import { Avatar } from '../../ui/Avatar'
-import { RADIUS, layoutSpring, settledContentFade, viewExit } from '../../ui/motion'
-import { describePaymentMonths, describeReceived } from './describe-payment'
-import type { StandingText } from './describe-standing'
-import { memberLayoutId } from './layout-ids'
-import type { Language } from './locale'
-import { STATUS_COLOR } from './status-colors'
+import type { BoardRow } from '../../../data/board'
+import { isDated } from '../../../model/types'
+import { Avatar } from '../../../shared/ui/Avatar'
+import { RADIUS, layoutSpring, settledContentFade, viewExit } from '../../../shared/lib/motion'
+import { describePaymentMonths, describeReceived } from '../../../shared/lib/describe-payment'
+import type { StandingText } from '../../../shared/lib/describe-standing'
+import { memberLayoutId } from '../helpers/layout-ids'
+import type { Language } from '../../../shared/lib/locale'
+import { STATUS_COLOR } from '../../../shared/lib/status-colors'
 
 type Props = {
   row: BoardRow
@@ -17,13 +17,10 @@ type Props = {
   lng: Language
   currentYear: number
   onClose: () => void
-  /** Admin only, for Paying Members: opens the record-payment sheet. */
   onRecord?: () => void
-  /** Admin only: removes the latest Payment (the only one that can go). */
   onRemoveLatest?: () => void
 }
 
-/** A Member's details: next payment, months covered and their Payment history. Grows out of their MemberRow. */
 export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose, onRecord, onRemoveLatest }: Props) {
   const { t } = useTranslation()
   const reduce = useReducedMotion()

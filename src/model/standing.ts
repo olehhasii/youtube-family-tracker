@@ -2,7 +2,6 @@ import { addMonths, daysBetween, firstDayOf, monthIndex, monthOf } from './calen
 import { lastPaidMonth } from './payments'
 import type { Day, Member, Payment, Standing } from './types'
 
-/** A Member is Due Soon when the Due Date is this many days away or fewer. */
 const DUE_SOON_DAYS = 7
 
 export function standing(member: Member, payments: Payment[], today: Day): Standing {

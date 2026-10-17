@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import type { Standing } from '../../../model'
+import type { Standing } from '../../../model/types'
 import { describeStanding } from '../describe-standing'
 
 type DatedStanding = Extract<Standing, { daysUntilDue: number }>

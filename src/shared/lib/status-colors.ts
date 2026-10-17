@@ -1,6 +1,5 @@
-import type { Status } from '../../model'
+import type { Status } from '../../model/types'
 
-/** The CSS colour token for each Status (defined in src/index.css). */
 export const STATUS_COLOR: Record<Status, string> = {
   paid: 'var(--color-paid)',
   dueSoon: 'var(--color-due-soon)',

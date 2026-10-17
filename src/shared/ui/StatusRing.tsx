@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'motion/react'
-import type { Status } from '../../model'
-import { STATUS_COLOR_TRANSITION, ringDraw } from '../../ui/motion'
-import { STATUS_COLOR } from './status-colors'
+import type { Status } from '../../model/types'
+import { STATUS_COLOR_TRANSITION, ringDraw } from '../lib/motion'
+import { STATUS_COLOR } from '../lib/status-colors'
 
 type Props = {
   /** One Status per Paying Member, in Board order. */
@@ -11,7 +11,6 @@ type Props = {
   label: string
 }
 
-/** A ring split into one segment per Paying Member, coloured by Status. */
 export function StatusRing({ statuses, size, stroke, label }: Props) {
   const reduce = useReducedMotion()
   const r = (size - stroke) / 2

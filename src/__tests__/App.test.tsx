@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react'
 import { expect, test, vi } from 'vitest'
 import App from '../App'
-import '../i18n'
+import '../i18n/index'
 
 // Stand in for the network only; mapping, ordering and rendering are real.
 vi.mock('../data/queries', () => ({

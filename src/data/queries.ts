@@ -1,5 +1,5 @@
-// Reads and writes against Supabase. Payments only change through the database functions (ADR 0001).
-import type { Day } from '../model'
+// Payments only change through the database functions (ADR 0001), never by writing the table.
+import type { Day } from '../model/types'
 import { type Board, type BoardTables, toBoard } from './board'
 import type { Database } from './database.types'
 import { supabase } from './supabase'
@@ -11,7 +11,6 @@ export async function fetchBoard(today: Day = kyivToday()): Promise<Board> {
   return toBoard(await fetchBoardTables(), today)
 }
 
-/** The rows the Board is built from, as stored. */
 export async function fetchBoardTables(): Promise<BoardTables> {
   const [group, members, payments] = await Promise.all([
     supabase.from('groups').select('*').maybeSingle(), // none until the Admin creates it
@@ -42,7 +41,6 @@ export async function isSignedIn() {
   return data.session !== null
 }
 
-/** Calls `listener` whenever someone signs in or out; returns the unsubscribe. */
 export function onSignedInChange(listener: (signedIn: boolean) => void) {
   const { data } = supabase.auth.onAuthStateChange((_event, session) => listener(session !== null))
   return () => data.subscription.unsubscribe()

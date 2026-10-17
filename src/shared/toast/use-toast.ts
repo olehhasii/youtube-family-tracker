@@ -1,4 +1,3 @@
-// Toasts show in the island. Anything under ToastProvider can raise one with `useToast()`.
 import { createContext, use } from 'react'
 
 export type ToastOptions = {
@@ -17,7 +16,6 @@ type ToastContextValue = {
   show: (text: string, options?: ToastOptions) => void
   /** Ends the current toast now as if its time ran out; waits for its `onExpire` and rejects if that failed. */
   settle: () => Promise<void>
-  /** Runs the current toast's action and ends it. */
   runAction: () => void
   /** Holds the timer while someone is reading or reaching the toast. */
   setPaused: (paused: boolean) => void
@@ -31,13 +29,11 @@ function useToastContext() {
   return context
 }
 
-/** Shows a short message in the island for `TOAST_MS`. */
 export const useToast = () => useToastContext().show
 
 /** Settles the current toast early, e.g. so a pending removal is done before the next write. */
 export const useSettleToast = () => useToastContext().settle
 
-/** What the island needs to show and run toasts. */
 export const useIslandToast = () => {
   const { toast, runAction, setPaused } = useToastContext()
   return { toast, runAction, setPaused }

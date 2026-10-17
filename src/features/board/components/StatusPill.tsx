@@ -1,9 +1,8 @@
 import { motion, useReducedMotion } from 'motion/react'
-import type { Status } from '../../model'
-import { pillSpring } from '../../ui/motion'
-import { STATUS_COLOR } from './status-colors'
+import type { Status } from '../../../model/types'
+import { pillSpring } from '../../../shared/lib/motion'
+import { STATUS_COLOR } from '../../../shared/lib/status-colors'
 
-/** The coloured Status pill; it springs in again whenever the Status changes. */
 export function StatusPill({ status, text }: { status: Status; text: string }) {
   const reduce = useReducedMotion()
   return (

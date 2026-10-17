@@ -1,4 +1,4 @@
-import type { Day } from '../model'
+import type { Day } from '../model/types'
 
 const kyivDate = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Kyiv', year: 'numeric', month: '2-digit', day: '2-digit' })
 

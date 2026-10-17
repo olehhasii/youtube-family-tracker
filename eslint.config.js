@@ -24,7 +24,7 @@ export default defineConfig([
     files: ['src/**/*.{ts,tsx}'],
     ignores: ['src/data/**', '**/__tests__/**'], // tests may stub data internals at the network boundary
     rules: {
-      'no-restricted-imports': ['error', { patterns: [{ group: ['@supabase/*'], message: 'Use the hooks from src/data instead.' }, { group: ['**/data/*'], message: 'Import from src/data (its index), not its internals.' }] }],
+      'no-restricted-imports': ['error', { patterns: [{ group: ['@supabase/*'], message: 'Use the hooks from src/data instead.' }, { group: ['**/data/queries', '**/data/supabase', '**/data/pending-removals', '**/data/database.types'], message: 'Use the hooks in src/data/hooks instead.' }] }],
     },
   },
 ])

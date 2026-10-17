@@ -1,8 +1,7 @@
-// The two lines the island shows at rest: who needs attention, or when the next Payment is due.
-import i18n from '../../i18n'
-import { type Standing, isDated } from '../../model'
-import { describeStanding } from '../board/describe-standing'
-import type { Language } from '../board/locale'
+import i18n from '../../../i18n/index'
+import { type Standing, isDated } from '../../../model/types'
+import { describeStanding } from '../../../shared/lib/describe-standing'
+import type { Language } from '../../../shared/lib/locale'
 
 export type Headline = { label: string; text: string }
 

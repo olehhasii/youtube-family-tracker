@@ -1,6 +1,5 @@
-// The words for one Payment in a Member's history.
-import i18n from '../../i18n'
-import type { Payment } from '../../model'
+import i18n from '../../i18n/index'
+import type { Payment } from '../../model/types'
 import { type Language, LOCALE, utcDate } from './locale'
 
 /** The month `offset` months after `firstMonth`, as UTC midnight on its 1st. */

@@ -1,6 +1,5 @@
-// The words a Board row shows for a Standing, in the given language.
-import i18n from '../../i18n'
-import { type Standing, isDated } from '../../model'
+import i18n from '../../i18n/index'
+import { type Standing, isDated } from '../../model/types'
 import { type Language, LOCALE, utcDate } from './locale'
 
 export type StandingText = {

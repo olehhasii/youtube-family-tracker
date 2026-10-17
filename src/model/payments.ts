@@ -10,7 +10,6 @@ function latestOf(member: Member, payments: Payment[]): Payment | null {
     .reduce<Payment | null>((a, b) => (a && a.firstMonth > b.firstMonth ? a : b), null)
 }
 
-/** The Member's last Paid Month, or null when they have no Payments. */
 export function lastPaidMonth(member: Member, payments: Payment[]): Month | null {
   const last = latestOf(member, payments)
   return last && addMonths(last.firstMonth, last.months - 1)

@@ -1,17 +1,20 @@
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { type BoardRow, useAdmin, useBoard, useRemoveLatestPayment } from '../../data'
+import type { BoardRow } from '../../data/board'
+import { useAdmin } from '../../data/hooks/use-auth'
+import { useBoard } from '../../data/hooks/use-board'
+import { useRemoveLatestPayment } from '../../data/hooks/use-payments'
 import { RecordPaymentSheet } from '../admin/RecordPaymentSheet'
 import { Island } from '../island/Island'
-import { useToast } from '../island/toast'
-import { describePaymentMonths } from './describe-payment'
-import { RADIUS, cardEntrance, layoutSpring, viewExit } from '../../ui/motion'
-import { DetailCard } from './DetailCard'
-import { describeStanding } from './describe-standing'
-import { LOCALE, toLanguage } from './locale'
-import { MemberRow } from './MemberRow'
-import { StatusRing } from './StatusRing'
+import { useToast } from '../../shared/toast/use-toast'
+import { describePaymentMonths } from '../../shared/lib/describe-payment'
+import { RADIUS, cardEntrance, layoutSpring, viewExit } from '../../shared/lib/motion'
+import { DetailCard } from './components/DetailCard'
+import { describeStanding } from '../../shared/lib/describe-standing'
+import { LOCALE, toLanguage } from '../../shared/lib/locale'
+import { MemberRow } from './components/MemberRow'
+import { StatusRing } from '../../shared/ui/StatusRing'
 
 export function BoardPage() {
   const { t, i18n } = useTranslation()
@@ -23,7 +26,7 @@ export function BoardPage() {
   const toast = useToast()
   const [openId, setOpenId] = useState<string | null>(null)
   const [recordingId, setRecordingId] = useState<string | null>(null)
-  const [returnFocusTo, setReturnFocusTo] = useState<string | null>(null) // the row whose card just closed
+  const [returnFocusTo, setReturnFocusTo] = useState<string | null>(null)
 
   const open = (id: string) => {
     setReturnFocusTo(null)

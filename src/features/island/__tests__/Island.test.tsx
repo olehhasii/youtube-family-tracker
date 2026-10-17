@@ -5,11 +5,11 @@ import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { type Board, toBoard } from '../../../data/board'
 import { isSignedIn, signIn, signOut } from '../../../data/queries'
-import i18n from '../../../i18n'
-import { TOAST_MS } from '../../../ui/motion'
+import i18n from '../../../i18n/index'
+import { TOAST_MS } from '../../../shared/lib/motion'
 import { Island } from '../Island'
-import { useToast } from '../toast'
-import { ToastProvider } from '../ToastProvider'
+import { useToast } from '../../../shared/toast/use-toast'
+import { ToastProvider } from '../../../shared/toast/ToastProvider'
 
 // Stand in for the network only.
 vi.mock('../../../data/queries', () => ({

@@ -1,10 +1,11 @@
-// Database rows → what the Board shows. Pure, so it is tested without a network.
-import { type Day, type GroupSummary, type Member, type Payment, type Standing, boardOrder, groupSummary, standing } from '../model'
+import type { Day, Member, Payment, Standing } from '../model/types'
+import { type GroupSummary, groupSummary } from '../model/summary'
+import { boardOrder } from '../model/board-order'
+import { standing } from '../model/standing'
 import type { Database } from './database.types'
 
 type Tables = Database['public']['Tables']
 
-/** The database rows the Board is built from. */
 export type BoardTables = {
   /** null until the Admin has created the Group. */
   group: Tables['groups']['Row'] | null

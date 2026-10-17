@@ -1,5 +1,4 @@
-// Payments the Admin has removed but that are not deleted yet, so the removal can still be undone.
-// The Board leaves them out as if they were gone.
+// Payments removed on the Board but not deleted yet, so the removal can still be undone.
 import { useSyncExternalStore } from 'react'
 
 let hidden: ReadonlySet<string> = new Set()
@@ -23,5 +22,4 @@ const subscribe = (listener: () => void) => {
   return () => listeners.delete(listener)
 }
 
-/** Ids of Payments waiting to be deleted. */
 export const useHiddenPayments = () => useSyncExternalStore(subscribe, () => hidden)
