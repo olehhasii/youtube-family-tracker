@@ -77,7 +77,7 @@ describe('BoardPage', () => {
     expect(within(stage).getByRole('heading', { level: 1 })).toHaveTextContent('Family Premium')
     expect(within(stage).getByText('3 учасники')).toBeInTheDocument()
     expect(stat(stage, 'сплатили')).toBe('1/2')
-    expect(stat(stage, 'Заборгованість')).toBe('Sasha · 3 місяці')
+    expect(within(stage).queryByText('Заборгованість')).not.toBeInTheDocument()
     expect(stat(stage, 'на місяць')).toBe('299 UAH · ≈150 UAH')
   })
 

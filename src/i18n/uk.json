@@ -54,14 +54,6 @@
     "noPayments": "Платежів ще немає."
   },
   "island": {
-    "nextPayment": "Наступний платіж",
-    "behind": "Заборгованість",
-    "months_one": "{{count}} місяць",
-    "months_few": "{{count}} місяці",
-    "months_many": "{{count}} місяців",
-    "months_other": "{{count}} місяця",
-    "payments": "Платежі",
-    "noneRecorded": "Ще нічого не внесено",
     "label": "Стан і меню",
     "menu": "Меню",
     "back": "Назад",

@@ -66,10 +66,15 @@ beforeEach(() => {
 afterEach(() => vi.useRealTimers())
 
 describe('Island', () => {
-  test('at rest, says who is behind', () => {
+  test('at rest, shows the time and date in Kyiv, ticking each minute', () => {
+    vi.useFakeTimers()
+    vi.setSystemTime('2026-10-17T09:05:30Z')
     renderIsland(board)
-    expect(screen.getByText('Заборгованість')).toBeInTheDocument()
-    expect(screen.getByText('Sasha · 3 місяці')).toBeInTheDocument()
+    expect(screen.getByText('12:05')).toBeInTheDocument()
+    expect(screen.getByText('субота, 17 жовтня')).toBeInTheDocument()
+
+    act(() => vi.advanceTimersByTime(30_000))
+    expect(screen.getByText('12:06')).toBeInTheDocument()
   })
 
   test('••• opens the menu and Back returns, keeping focus in the island', async () => {
@@ -118,13 +123,15 @@ describe('Island', () => {
   })
 
   test('the language button switches between UA and EN', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    vi.setSystemTime('2026-10-17T09:05:30Z')
     const user = userEvent.setup()
     renderIsland(board)
 
     await user.click(screen.getByRole('button', { name: 'UA · змінити мову на англійську' }))
-    expect(screen.getByText('Sasha · 3 months')).toBeInTheDocument()
+    expect(screen.getByText('Saturday 17 October')).toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'EN · switch language to Ukrainian' }))
-    expect(screen.getByText('Sasha · 3 місяці')).toBeInTheDocument()
+    expect(screen.getByText('субота, 17 жовтня')).toBeInTheDocument()
   })
 
   test('while the Board loads, the menu still works', async () => {

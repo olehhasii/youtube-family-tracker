@@ -44,12 +44,6 @@
     "noPayments": "Nothing recorded yet."
   },
   "island": {
-    "nextPayment": "Next payment",
-    "behind": "Behind",
-    "months_one": "{{count}} month",
-    "months_other": "{{count}} months",
-    "payments": "Payments",
-    "noneRecorded": "None recorded yet",
     "label": "Status and menu",
     "menu": "Menu",
     "back": "Back",

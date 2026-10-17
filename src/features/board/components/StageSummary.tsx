@@ -2,7 +2,6 @@ import { motion, useReducedMotion } from 'motion/react'
 import { type ReactNode, useId } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Board } from '../../../data/board'
-import { describeHeadline } from '../../../shared/lib/describe-headline'
 import { LOCALE, toLanguage } from '../../../shared/lib/locale'
 import { cardEntrance } from '../../../shared/lib/motion'
 
@@ -11,11 +10,6 @@ export function StageSummary({ board: { rows, summary }, group }: { board: Board
   const lng = toLanguage(i18n.resolvedLanguage)
   const reduce = useReducedMotion()
   const title = useId()
-  const paying = rows.filter((r) => r.standing.status !== 'exempt')
-  const headline = describeHeadline(
-    paying.map((r) => ({ name: r.member.name, standing: r.standing })),
-    lng,
-  )
   const money = (amount: number, digits: number) =>
     `${new Intl.NumberFormat(LOCALE[lng], { maximumFractionDigits: digits }).format(amount)} ${group.currency}`
 
@@ -36,7 +30,6 @@ export function StageSummary({ board: { rows, summary }, group }: { board: Board
             t('stage.nobodyPays')
           )}
         </Stat>
-        <Stat label={headline.label}>{headline.text}</Stat>
         <Stat label={t('stage.perMonth')}>
           {money(group.monthlyPrice, 2)}
           {summary.pricePerPerson !== null && ` · ≈${money(summary.pricePerPerson, 0)}`}

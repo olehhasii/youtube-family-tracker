@@ -16,15 +16,15 @@ export function BoardPage() {
   const entrance = cardEntrance(reduce)
 
   return (
-    <div className="relative min-h-dvh lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+    <div className="relative min-h-dvh lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,40rem)] lg:justify-center lg:gap-[clamp(3rem,6vw,7rem)] lg:px-12">
       <div aria-hidden className="grass fixed inset-x-0 bottom-0 h-24" />
       <Stage board={board.data} />
-      <div className="relative -mt-12 flex justify-center px-safe pb-[calc(9rem+env(safe-area-inset-bottom))] lg:mt-0 lg:min-h-dvh lg:items-center lg:px-[clamp(1.5rem,4vw,4rem)] lg:pt-16">
+      <div className="relative -mt-12 flex justify-center px-safe pb-[calc(9rem+env(safe-area-inset-bottom))] lg:mt-0 lg:min-h-dvh lg:items-center lg:px-0 lg:pt-16">
         <motion.main
           layout={!reduce}
           {...entrance}
           transition={{ ...entrance.transition, layout: layoutSpring }}
-          className="w-full max-w-150 bg-card p-4 shadow-card lg:max-w-[clamp(600px,36vw,780px)]"
+          className="w-full max-w-150 bg-card p-4 shadow-card lg:max-w-none"
           style={{ borderRadius: RADIUS.card }} // inline so Motion can correct it while the card resizes
         >
           <BoardBody board={board} onRecord={setRecordingId} />
