@@ -8,11 +8,13 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest",
+    "test:db": "vitest run --config vitest.db.config.ts",
     "preview": "vite preview"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "@hookform/resolvers": "^5.9.2",
+    "@supabase/supabase-js": "^2.118.0",
     "@tanstack/react-query": "^5.104.3",
     "date-fns": "^4.4.0",
     "i18next": "^26.4.7",

@@ -6,6 +6,7 @@ A small personal app that tracks which friends sharing a YouTube Premium Family 
 - **Core idea:** Payments are a ledger of whole months with no amounts. Paid Months, the Due Date and each Member's Status are derived from the ledger, never stored. Use the terms in `GLOSSARY.md`; the rules and their reasons are in `docs/adr/`.
 - **Direction:** the old app's look made smoother: near-black neutrals, Inter, one centred card, a black pill "island" at the bottom for status, menu and toasts. Motion is the core of the experience, mobile-first but equally good on desktop. 3D (R3F) is an optional, lazy-loaded accent only.
 - **Stack:** Vite + React + TypeScript SPA, Tailwind v4, Motion, Base UI, TanStack Query, Supabase (free tier), deployed on Vercel. UA is the default language, EN second.
+- **Database:** schema changes are new files in `supabase/migrations/` (never edit an applied one), pushed with `npx supabase db push`. `npm test` is offline; `npm run test:db` runs against the real linked project and needs `.env.local`.
 - **Code layout:** `src/model/` holds the pure payment rules (test-first); `src/data/` is the only place that talks to Supabase; UI lives in `src/features/` and `src/ui/`. Tests live in a `__tests__/` folder beside the code they test (e.g. `src/model/__tests__/`), with shared test helpers in the same folder.
 
 Read `.scratch/remake/spec.md` before planning or building: it holds the full scope and decisions. Work is tracked as tickets in `.scratch/remake/issues/`; take the lowest-numbered ticket that is unblocked and unresolved.
