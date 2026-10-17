@@ -37,7 +37,8 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
       transition={{ ...layoutSpring, opacity: viewExit }}
       aria-label={member.name}
       onKeyDown={(e) => e.key === 'Escape' && onClose()}
-      className="overflow-hidden bg-raised/60 p-4"
+      // the background and border are slots for a Member's personal touches (spec: deferred until after v1)
+      className="overflow-hidden border border-(--member-page-border,transparent) bg-(--member-page-bg,var(--raised)) p-4"
       style={{ borderRadius: RADIUS.detail }}
     >
       <div className="flex items-center gap-3">
@@ -45,7 +46,7 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
           <Avatar id={member.id} name={member.name} url={member.avatarUrl} size={56} />
         </motion.div>
         <div className="min-w-0 flex-1">
-          <motion.h2 layoutId={memberLayoutId(member.id, '-name', reduce)} transition={layoutSpring} className="w-fit text-xl font-semibold">
+          <motion.h2 layoutId={memberLayoutId(member.id, '-name', reduce)} transition={layoutSpring} className="w-fit font-display text-xl font-bold tracking-[-0.02em]">
             {member.name}
           </motion.h2>
           <p className="text-sm" style={{ color: STATUS_COLOR[standing.status] }}>
@@ -63,12 +64,14 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
         ) : (
           <>
             <dl className="mt-4 grid grid-cols-2 gap-2 text-sm">
-              <div className="rounded-2xl bg-page/40 p-3">
+              <div className="rounded-2xl bg-accent/45 p-3">
                 <dt className="text-muted">{t('detail.nextPayment')}</dt>
-                <dd className="mt-1 font-medium">{wording.dueDate}</dd>
-                <dd style={{ color: STATUS_COLOR[standing.status] }}>{wording.relative}</dd>
+                <dd className="mt-1 font-bold">{wording.dueDate}</dd>
+                <dd className="font-bold" style={{ color: STATUS_COLOR[standing.status] }}>
+                  {wording.relative}
+                </dd>
               </div>
-              <div className="rounded-2xl bg-page/40 p-3">
+              <div className="rounded-2xl bg-accent/45 p-3">
                 <dt className="text-muted">{t('detail.covered')}</dt>
                 <dd className="mt-1 font-medium">{wording.paidThrough}</dd>
                 <dd className="text-muted">{t('detail.monthsTotal', { count: monthsTotal })}</dd>
@@ -99,7 +102,7 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
           </>
         )}
         {onRecord && (
-          <button className="mt-3 h-12 w-full rounded-2xl bg-primary font-semibold text-primary-fg press" onClick={onRecord}>
+          <button className="mt-3 h-12 w-full rounded-full bg-primary font-semibold text-primary-fg press" onClick={onRecord}>
             {t('admin.recordPayment')}
           </button>
         )}

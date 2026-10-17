@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import type { DatedStanding, Standing } from '../../../../model/types'
+import type { DatedStanding, Standing } from '../../../model/types'
 import { describeHeadline } from '../describe-headline'
 
 const paid = (name: string, daysUntilDue: number, dueDate: string): { name: string; standing: DatedStanding } => ({

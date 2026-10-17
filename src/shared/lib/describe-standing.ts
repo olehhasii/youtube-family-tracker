@@ -4,7 +4,8 @@ import { type Language, LOCALE, utcDate } from './locale'
 
 export type StandingText = {
   pill: string
-  primary: string
+  /** The line shown instead of a Due Date ("Covers the plan", "No payments yet"); null when there is one, as the row sets "Next payment · <date>" itself with the date in bold. */
+  primary: string | null
   /** The Due Date alone, "1 November"; null without Payments. */
   dueDate: string | null
   /** "in 15 days" / "3 days late" / "due today"; null without a Due Date. */
@@ -25,7 +26,7 @@ export function describeStanding(standing: Standing, lng: Language): StandingTex
 
   return {
     pill: monthsBehind > 1 ? t('standing.monthsBehind', { count: monthsBehind }) : t(`status.${standing.status}`),
-    primary: t('standing.nextPayment', { date: due }),
+    primary: null,
     dueDate: due,
     relative:
       daysUntilDue === 0

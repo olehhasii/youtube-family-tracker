@@ -41,6 +41,9 @@ const board: BoardTables = {
   payments: [payment('sasha', '2026-02', 3), payment('sasha', '2026-05', 3), payment('ira', '2026-09', 6)],
 }
 
+/** The value shown under a stage stat's label. */
+const stat = (stage: HTMLElement, label: string) => within(stage).getByText(label).nextElementSibling?.textContent
+
 beforeEach(() => {
   vi.mocked(fetchBoardTables).mockReset()
   vi.mocked(isSignedIn).mockResolvedValue(false)
@@ -60,11 +63,22 @@ describe('BoardPage', () => {
       expect.stringContaining('Sasha'),
       expect.stringContaining('Ira'),
     ])
-    expect(within(rows[1]).getByText('Наступний платіж · 1 серпня')).toBeInTheDocument()
+    expect(rows[1]).toHaveTextContent('Наступний платіж · 1 серпня')
+    expect(within(rows[1]).getByText('1 серпня', { selector: 'strong' })).toBeInTheDocument()
     expect(within(rows[1]).getByText('прострочено на 77 днів')).toBeInTheDocument()
     expect(within(rows[1]).getByText('Прострочено 3 місяці')).toBeInTheDocument()
-    expect(screen.getByText('Family Premium')).toBeInTheDocument()
-    expect(screen.getByText('Сплачено 1 з 2 · 299 UAH на місяць')).toBeInTheDocument()
+  })
+
+  test('the stage sums up the Group above the list', async () => {
+    vi.mocked(fetchBoardTables).mockResolvedValue(board)
+    renderWithProviders(<BoardPage />)
+
+    const stage = await screen.findByRole('region', { name: 'Family Premium' })
+    expect(within(stage).getByRole('heading', { level: 1 })).toHaveTextContent('Family Premium')
+    expect(within(stage).getByText('3 учасники')).toBeInTheDocument()
+    expect(stat(stage, 'сплатили')).toBe('1/2')
+    expect(stat(stage, 'Заборгованість')).toBe('Sasha · 3 місяці')
+    expect(stat(stage, 'на місяць')).toBe('299 UAH · ≈150 UAH')
   })
 
   test("tapping a Member opens their details and history; Close goes back", async () => {
@@ -101,12 +115,13 @@ describe('BoardPage', () => {
     await waitFor(() => expect(screen.getByRole('button', { name: /Sasha/ })).toHaveFocus())
   })
 
-  test('with nobody paying, the summary says so instead of "0 of 0"', async () => {
+  test('with nobody paying, the stage says so instead of "0/0"', async () => {
     vi.mocked(fetchBoardTables).mockResolvedValue(
       { group: { id: true, name: 'Family Premium', monthly_price: 299, currency: 'UAH' }, members: [member('oleh', 0, true)], payments: [] },
     )
     renderWithProviders(<BoardPage />)
-    expect(await screen.findByText('Ще ніхто не платить · 299 UAH на місяць')).toBeInTheDocument()
+    const stage = await screen.findByRole('region', { name: 'Family Premium' })
+    expect(stat(stage, 'сплатили')).toBe('ще ніхто')
   })
 
   test('shows a loading message, then an error message when the Board cannot load', async () => {

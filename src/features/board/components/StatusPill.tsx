@@ -11,8 +11,8 @@ export function StatusPill({ status, text }: { status: Status; text: string }) {
       initial={reduce ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
       animate={reduce ? { opacity: 1 } : { opacity: 1, scale: 1 }}
       transition={pillSpring}
-      className="shrink-0 rounded-full px-2.5 py-1 text-xs font-medium whitespace-nowrap text-white"
-      style={{ background: `color-mix(in srgb, ${STATUS_COLOR[status]} 60%, transparent)` }}
+      className="shrink-0 rounded-full px-2.5 py-1 text-xs font-semibold whitespace-nowrap text-white"
+      style={{ background: STATUS_COLOR[status] }}
     >
       {text}
     </motion.span>

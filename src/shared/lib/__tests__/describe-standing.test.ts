@@ -23,7 +23,7 @@ describe('describeStanding in English', () => {
   test('a Paid Member', () => {
     expect(describeStanding(paid(15), 'en')).toEqual({
       pill: 'Paid',
-      primary: 'Next payment · 1 November',
+      primary: null,
       dueDate: '1 November',
       relative: 'in 15 days',
       paidThrough: 'Paid through October',
@@ -41,7 +41,7 @@ describe('describeStanding in English', () => {
   test('an Overdue Member several months behind', () => {
     expect(describeStanding(overdue(-77, 3), 'en')).toEqual({
       pill: '3 months behind',
-      primary: 'Next payment · 1 August',
+      primary: null,
       dueDate: '1 August',
       relative: '77 days late',
       paidThrough: 'Paid through July',
@@ -59,7 +59,7 @@ describe('describeStanding in Ukrainian', () => {
   test('a Paid Member', () => {
     expect(describeStanding(paid(15), 'uk')).toEqual({
       pill: 'Сплачено',
-      primary: 'Наступний платіж · 1 листопада',
+      primary: null,
       dueDate: '1 листопада',
       relative: 'через 15 днів',
       paidThrough: 'Сплачено по жовтень',

@@ -58,13 +58,13 @@ export function RecordPaymentSheet({ row, today, onClose }: Props) {
       onOpenChangeComplete={(open) => !open && setMonths(1)}
     >
       <Drawer.Portal>
-        <Drawer.Backdrop className="fixed inset-0 z-100 min-h-dvh bg-black opacity-[calc(0.6*(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-drawer data-ending-style:opacity-0 data-starting-style:opacity-0 data-swiping:duration-0" />
+        <Drawer.Backdrop className="fixed inset-0 z-100 min-h-dvh bg-shade opacity-[calc(0.6*(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-drawer data-ending-style:opacity-0 data-starting-style:opacity-0 data-swiping:duration-0" />
         <Drawer.Viewport className="fixed inset-0 z-100 flex items-end justify-center">
           <Drawer.Popup className="w-full max-w-110 rounded-t-card border-t border-border bg-card px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-fg outline-none transform-[translateY(var(--drawer-swipe-movement-y))] transition-transform duration-450 ease-drawer data-ending-style:transform-[translateY(100%)] data-starting-style:transform-[translateY(100%)] data-swiping:select-none motion-reduce:transition-opacity motion-reduce:data-ending-style:transform-none motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:transform-none motion-reduce:data-starting-style:opacity-0">
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-fg/20" aria-hidden />
             {lastRow && range && (
               <Drawer.Content>
-                <Drawer.Title className="text-lg font-semibold">{t('admin.sheetTitle', { name: lastRow.member.name })}</Drawer.Title>
+                <Drawer.Title className="font-display text-lg font-bold tracking-[-0.02em]">{t('admin.sheetTitle', { name: lastRow.member.name })}</Drawer.Title>
                 <Drawer.Description className="mt-1 text-sm text-muted">{t('admin.sheetHint')}</Drawer.Description>
 
                 <div className="mt-6 flex items-center justify-between rounded-2xl bg-fg/5 p-2">
@@ -82,7 +82,7 @@ export function RecordPaymentSheet({ row, today, onClose }: Props) {
 
                 <MonthStrip first={range.first} months={months} length={MAX_MONTHS} lng={lng} />
 
-                <button className="mt-6 h-12 w-full rounded-2xl bg-primary font-semibold text-primary-fg press" onClick={() => void submit()}>
+                <button className="mt-6 h-12 w-full rounded-full bg-primary font-semibold text-primary-fg press" onClick={() => void submit()}>
                   {t('admin.record', { count: months })}
                 </button>
               </Drawer.Content>

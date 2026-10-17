@@ -43,7 +43,7 @@ export function SignInForm({ onSignedIn, back }: Props) {
       )}
       <div className="mt-1 flex items-center justify-between gap-2">
         {back}
-        <button type="submit" disabled={signIn.isPending} className="h-10 rounded-full bg-white px-5 font-semibold text-black press disabled:opacity-50">
+        <button type="submit" disabled={signIn.isPending} className="h-10 rounded-full bg-primary px-5 font-semibold text-primary-fg press disabled:opacity-50">
           {t('island.signIn')}
         </button>
       </div>
@@ -51,12 +51,12 @@ export function SignInForm({ onSignedIn, back }: Props) {
   )
 }
 
-const INPUT = 'h-11 w-full rounded-xl bg-white/10 px-3 text-white outline-none focus-visible:outline-2 focus-visible:outline-white'
+const INPUT = 'h-11 w-full rounded-xl bg-island-fg/8 px-3 text-island-fg outline-none focus-visible:outline-2 focus-visible:outline-island-fg'
 
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1">
-      <span className="px-1 text-[11px] text-white/50">{label}</span>
+      <span className="px-1 text-[11px] text-island-fg/55">{label}</span>
       {children}
     </label>
   )

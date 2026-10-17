@@ -3,7 +3,7 @@ import type { Board } from '../../../data/board'
 import { toLanguage } from '../../../shared/lib/locale'
 import { IconDots } from '../../../shared/ui/icons'
 import { StatusRing } from '../../../shared/ui/StatusRing'
-import { describeHeadline } from '../helpers/describe-headline'
+import { describeHeadline } from '../../../shared/lib/describe-headline'
 import { LanguageButton } from './LanguageButton'
 
 type Props = {
@@ -29,7 +29,7 @@ export function RestContent({ board, onOpenMenu }: Props) {
             label={t('board.ringLabel', { paidUp: board.summary.paidUp, paying: board.summary.paying })}
           />
           <div className="min-w-0 leading-tight">
-            <p className="text-[11px] text-white/50">{headline.label}</p>
+            <p className="text-[11px] text-island-fg/55">{headline.label}</p>
             <p className="truncate font-medium">{headline.text}</p>
           </div>
         </div>
@@ -37,7 +37,7 @@ export function RestContent({ board, onOpenMenu }: Props) {
       <LanguageButton />
       <button
         data-autofocus
-        className="grid size-10 shrink-0 place-items-center rounded-full bg-island-blue press-round"
+        className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-fg press-round"
         aria-label={t('island.menu')}
         onClick={onOpenMenu}
       >

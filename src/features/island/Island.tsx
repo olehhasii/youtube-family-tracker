@@ -75,7 +75,7 @@ export function Island({ board }: { board: Board | undefined }) {
         onKeyDown={(e) => {
           if (e.key === 'Escape' && mode !== 'rest') back() // also under a toast, for what comes back after it
         }}
-        className="pointer-events-auto max-w-full overflow-hidden border border-white/10 bg-black p-1.5 text-sm text-white shadow-[0_10px_40px_rgb(0_0_0/0.6)] outline-none"
+        className="pointer-events-auto max-w-full overflow-hidden border border-island-fg/5 bg-island p-1.5 text-sm text-island-fg shadow-island outline-none"
         style={{ borderRadius: RADIUS.island }} // inline so Motion can correct it while the island morphs
       >
         <AnimatePresence mode="popLayout" initial={false}>
@@ -106,7 +106,7 @@ export function Island({ board }: { board: Board | undefined }) {
 
           {shown === 'about' && (
             <Panel key="about" name="about" {...panel} className="flex w-80 max-w-full flex-col items-start gap-3 p-2.5">
-              <p className="leading-relaxed text-white/80">{t('island.aboutText')}</p>
+              <p className="leading-relaxed text-island-fg/80">{t('island.aboutText')}</p>
               <BackButton data-autofocus onClick={back} />
             </Panel>
           )}

@@ -1,29 +1,38 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/tektur';
+@import '@fontsource-variable/golos-text';
 
-/* Palette from the old app. Dark is the default; light applies with data-theme="light" on <html>. */
+/* The Sky look (spec "Look"). Light is the only theme for now; the dark Sky (ticket 12) adds its own block and becomes the default. */
 :root {
-  --page: #0a0a0a;
-  --card: #171717;
-  --raised: #262626;
-  --accent: #404040;
-  --fg: #fafafa;
-  --muted: #a1a1a1;
-  --primary: #e5e5e5;
-  --primary-fg: #0a0a0a;
-  --border: rgb(255 255 255 / 0.1);
-  color-scheme: dark;
-}
+  --sky-top: #1a84c4;
+  --sky-middle: #3a9ed8;
+  --sky-bottom: #74c0e6;
+  --cloud: #fff9ea;
+  --cloud-shade: #bcd9ea;
+  --grass-top: #86c062;
+  --grass-bottom: #5f9d46;
+  --on-sky: #ffffff;
 
-:root[data-theme='light'] {
-  --page: #ffffff;
-  --card: #f8f9fa;
-  --raised: #f1f3f4;
-  --accent: #e9ecef;
-  --fg: #212529;
-  --muted: #6c757d;
-  --primary: #212529;
-  --primary-fg: #ffffff;
-  --border: rgb(0 0 0 / 0.08);
+  --page: var(--sky-middle);
+  --card: #fbf5e8;
+  --raised: #fffdf7;
+  --accent: #e9e1cf;
+  --fg: #2b2a27;
+  --muted: #7a756b;
+  --primary: #d4483b;
+  --primary-fg: #fffaf0;
+  --border: rgb(43 42 39 / 0.08);
+  --island: #fffaf0;
+  --island-fg: #2b2a27;
+  --shade: rgb(10 60 100);
+
+  --paid: #4c9a3d;
+  --due-soon: #c68a10;
+  --overdue: #d4483b;
+  --unknown: #a29d92;
+  --exempt: #2a7fb8;
+
+  --grain: 0.22;
   color-scheme: light;
 }
 
@@ -37,28 +46,31 @@
   --color-primary: var(--primary);
   --color-primary-fg: var(--primary-fg);
   --color-border: var(--border);
+  --color-island: var(--island);
+  --color-island-fg: var(--island-fg);
+  --color-on-sky: var(--on-sky);
+  --color-shade: var(--shade);
+  --color-paid: var(--paid);
+  --color-due-soon: var(--due-soon);
+  --color-overdue: var(--overdue);
+  --color-unknown: var(--unknown);
+  --color-exempt: var(--exempt);
+
+  --shadow-card: 0 2px 0 rgb(255 255 255 / 0.7) inset, 0 34px 60px -26px rgb(from var(--shade) r g b / 0.6);
+  --shadow-island: 0 18px 40px -14px rgb(from var(--shade) r g b / 0.7);
 }
 
 @theme {
-  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
-
-  /* Status colours, the same in both themes */
-  --color-paid: rgb(34 197 94);
-  --color-due-soon: rgb(234 178 8);
-  --color-overdue: rgb(220 38 38);
-  --color-unknown: rgb(115 115 115);
-  --color-exempt: rgb(59 131 246);
-
-  /* The island's blue ••• button */
-  --color-island-blue: #0a84ff;
+  --font-sans: 'Golos Text Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Tektur Variable', ui-sans-serif, system-ui, sans-serif;
 
   /* Curves from CLAUDE.md "Motion"; `ease-out` is the strong UI curve */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   --radius-card: 28px;
-  --radius-detail: 20px;
-  --radius-row: 14px;
+  --radius-detail: 24px;
+  --radius-row: 20px;
   --radius-island: 26px;
 }
 
@@ -92,19 +104,57 @@
   padding-right: max(1rem, env(safe-area-inset-right));
 }
 
+/* A Member row leaning towards its Status colour, set as --tint */
+@utility status-tint {
+  background: linear-gradient(100deg, var(--raised) 40%, color-mix(in srgb, var(--tint) 16%, var(--raised)));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--tint) 30%, transparent);
+}
+
+@utility status-hatched {
+  background:
+    repeating-linear-gradient(-45deg, transparent 0 7px, color-mix(in srgb, var(--tint) 9%, transparent) 7px 9px) right / 34% 100% no-repeat,
+    linear-gradient(100deg, var(--raised) 40%, color-mix(in srgb, var(--tint) 18%, var(--raised)));
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--tint) 30%, transparent);
+}
+
+@utility status-faded {
+  background: color-mix(in srgb, var(--raised) 55%, transparent);
+  outline: 1.5px dashed color-mix(in srgb, var(--fg) 18%, transparent);
+  outline-offset: -1.5px;
+}
+
+/* Grass along the bottom of the screen, behind the card and under the island; the conic mask cuts the blades */
+@utility grass {
+  background: linear-gradient(var(--grass-top), var(--grass-bottom));
+  mask:
+    linear-gradient(#000, #000) 0 10px / 100% 100% no-repeat,
+    conic-gradient(from 150deg at 50% 0, #000 60deg, transparent 0) 0 0 / 9px 11px repeat-x;
+}
+
 /* Mobile baseline (see the mobile-native skill) */
 html {
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   overscroll-behavior: none;
-  font-feature-settings: 'cv11', 'ss01';
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
-  background: var(--page);
+  background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-middle) 50%, var(--sky-bottom) 100%) fixed var(--page);
   color: var(--fg);
+}
+
+/* Grain over everything, the record sheet included (z-100); grey noise with overlay blend is neutral at mid-grey, so it never shifts the colours */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  pointer-events: none;
+  opacity: var(--grain);
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='table' tableValues='1 1'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
 input,

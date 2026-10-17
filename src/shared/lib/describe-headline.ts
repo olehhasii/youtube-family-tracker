@@ -1,7 +1,7 @@
-import i18n from '../../../i18n/index'
-import { type Standing, isDated } from '../../../model/types'
-import { describeStanding } from '../../../shared/lib/describe-standing'
-import type { Language } from '../../../shared/lib/locale'
+import i18n from '../../i18n/index'
+import { type Standing, isDated } from '../../model/types'
+import { describeStanding } from './describe-standing'
+import type { Language } from './locale'
 
 export type Headline = { label: string; text: string }
 

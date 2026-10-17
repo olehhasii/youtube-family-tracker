@@ -3,9 +3,14 @@
     "empty": "No one here yet.",
     "loading": "Loading…",
     "error": "Couldn't load the Board. Try again.",
-    "summary": "{{paidUp}} of {{paying}} paid · {{price}} {{currency}} a month",
-    "ringLabel": "{{paidUp}} of {{paying}} paid up",
-    "summaryNobodyPays": "Nobody pays yet · {{price}} {{currency}} a month"
+    "ringLabel": "{{paidUp}} of {{paying}} paid up"
+  },
+  "stage": {
+    "members_one": "{{count}} member",
+    "members_other": "{{count}} members",
+    "paidUp": "paid up",
+    "nobodyPays": "nobody yet",
+    "perMonth": "a month"
   },
   "status": {
     "paid": "Paid",
@@ -15,7 +20,7 @@
     "exempt": "Exempt"
   },
   "standing": {
-    "nextPayment": "Next payment · {{date}}",
+    "nextPayment": "Next payment · <strong>{{date}}</strong>",
     "paidThrough": "Paid through {{month}}",
     "exempt": "Covers the plan",
     "unknown": "No payments yet",

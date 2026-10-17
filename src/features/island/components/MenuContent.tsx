@@ -4,7 +4,7 @@ import { IconCode, IconInfo, IconKey } from '../../../shared/ui/icons'
 import { BackButton } from './BackButton'
 
 const REPO_URL = 'https://github.com/olehhasii/youtube-family-tracker'
-const ICON_BUTTON = 'grid size-10 place-items-center rounded-full press-round hover-fine:bg-white/10'
+const ICON_BUTTON = 'grid size-10 place-items-center rounded-full press-round hover-fine:bg-island-fg/10'
 
 type Props = {
   admin: boolean
@@ -28,7 +28,7 @@ export function MenuContent({ admin, from, onBack, onAbout, onSignIn, onSignOut 
         <IconCode />
       </a>
       {admin ? (
-        <IconButton label={t('island.signOut')} className={`${ICON_BUTTON} bg-island-blue`} onClick={onSignOut}>
+        <IconButton label={t('island.signOut')} className={`${ICON_BUTTON} bg-primary text-primary-fg`} onClick={onSignOut}>
           <IconKey />
         </IconButton>
       ) : (

@@ -3,9 +3,16 @@
     "empty": "Тут поки нікого немає.",
     "loading": "Завантаження…",
     "error": "Не вдалося завантажити дані. Спробуйте ще раз.",
-    "summary": "Сплачено {{paidUp}} з {{paying}} · {{price}} {{currency}} на місяць",
-    "ringLabel": "Сплачено {{paidUp}} з {{paying}}",
-    "summaryNobodyPays": "Ще ніхто не платить · {{price}} {{currency}} на місяць"
+    "ringLabel": "Сплачено {{paidUp}} з {{paying}}"
+  },
+  "stage": {
+    "members_one": "{{count}} учасник",
+    "members_few": "{{count}} учасники",
+    "members_many": "{{count}} учасників",
+    "members_other": "{{count}} учасника",
+    "paidUp": "сплатили",
+    "nobodyPays": "ще ніхто",
+    "perMonth": "на місяць"
   },
   "status": {
     "paid": "Сплачено",
@@ -15,7 +22,7 @@
     "exempt": "Не платить"
   },
   "standing": {
-    "nextPayment": "Наступний платіж · {{date}}",
+    "nextPayment": "Наступний платіж · <strong>{{date}}</strong>",
     "paidThrough": "Сплачено по {{month}}",
     "exempt": "Власник підписки",
     "unknown": "Платежів ще немає",

@@ -80,7 +80,7 @@ export const settledContentFade: Transition = { delay: 0.15, duration: 0.25, eas
 export const STATUS_COLOR_TRANSITION = 'stroke 250ms ease, color 250ms ease'
 
 /** Corner radii as numbers, for elements whose radius Motion must keep correct during layout animations (match src/index.css). */
-export const RADIUS = { card: 28, detail: 20, row: 14, island: 26 } as const
+export const RADIUS = { card: 28, detail: 24, row: 20, island: 26 } as const
 
 /** How long a toast stays in the island, in ms. */
 export const TOAST_MS = 2600

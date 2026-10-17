@@ -10,7 +10,7 @@ export function LanguageButton() {
   const code = lng === 'uk' ? 'UA' : 'EN'
   return (
     <button
-      className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-white/10 text-[13px] font-semibold press-round"
+      className="grid size-10 shrink-0 place-items-center overflow-hidden rounded-full bg-island-fg/10 text-[13px] font-semibold press-round"
       aria-label={t('island.switchLanguage', { current: code })} // starts with the visible letters, so voice control can say them
       onClick={() => void i18n.changeLanguage(lng === 'uk' ? 'en' : 'uk')}
     >
