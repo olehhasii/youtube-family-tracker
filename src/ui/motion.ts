@@ -11,6 +11,25 @@ export const layoutSpring: Transition = { type: 'spring', duration: 0.5, bounce:
 /** Island changing shape between rest, menu and toast. */
 export const islandSpring: Transition = { type: 'spring', duration: 0.45, bounce: 0.2 }
 
+/** The island rising in once the card has landed. */
+export function islandEntrance(reduce: boolean | null) {
+  return {
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 40 },
+    animate: reduce ? { opacity: 1 } : { opacity: 1, y: 0 },
+    transition: { ...islandSpring, delay: 0.4 },
+  }
+}
+
+/** Letters rolling up when a short label changes (UA ↔ EN). */
+export function letterRoll(reduce: boolean | null) {
+  return {
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 10 },
+    animate: reduce ? { opacity: 1 } : { opacity: 1, y: 0 },
+    exit: reduce ? { opacity: 0 } : { opacity: 0, y: -10 },
+    transition: { duration: 0.2, ease: EASE_OUT },
+  }
+}
+
 /** Status pill swapping to a new Status. */
 export const pillSpring: Transition = { type: 'spring', duration: 0.4, bounce: 0.25 }
 
@@ -53,7 +72,7 @@ export const settledContentFade: Transition = { delay: 0.15, duration: 0.25, eas
 export const STATUS_COLOR_TRANSITION = 'stroke 250ms ease, color 250ms ease'
 
 /** Corner radii as numbers, for elements whose radius Motion must keep correct during layout animations (match src/index.css). */
-export const RADIUS = { card: 28, detail: 20, row: 14 } as const
+export const RADIUS = { card: 28, detail: 20, row: 14, island: 26 } as const
 
 /** How long a toast stays in the island, in ms. */
 export const TOAST_MS = 2600

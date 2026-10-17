@@ -2,6 +2,7 @@ import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'motion/r
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useBoard } from '../../data'
+import { Island } from '../island/Island'
 import { RADIUS, cardEntrance, layoutSpring, viewExit } from '../../ui/motion'
 import { DetailCard } from './DetailCard'
 import { describeStanding } from './describe-standing'
@@ -99,6 +100,7 @@ export function BoardPage() {
       >
         {content}
       </motion.main>
+      <Island board={board.data} />
     </div>
   )
 }

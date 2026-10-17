@@ -18,6 +18,8 @@ Values chosen in the Board prototype (branch `prototype/board-variants`, variant
 - **Curves:** UI ease-out `cubic-bezier(0.23, 1, 0.32, 1)`; sheets/drawers `cubic-bezier(0.32, 0.72, 0, 1)` at 450ms.
 - **Layout springs** (row ↔ detail card, card resize): `{ type: 'spring', duration: 0.5, bounce: 0.12 }`.
 - **Island morph:** `{ type: 'spring', duration: 0.45, bounce: 0.2 }`; content swaps cross-fade with 4px blur + scale 0.96, 200ms ease-out.
+- **Island entrance:** rises from 40px below with the island spring, 400ms after page load.
+- **Rolling letters** (UA ↔ EN): old label out 10px up, new one in from 10px below, 200ms ease-out.
 - **Status pill change:** `{ type: 'spring', duration: 0.4, bounce: 0.25 }` from scale 0.9 + opacity 0.
 - **Press feedback:** `active:scale-[0.97]` for wide buttons, `0.92` for round icon buttons, 150ms ease-out. Use the `press` / `press-round` utilities from `src/index.css`; JS presets live in `src/ui/motion.ts`.
 - **Page load (the one orchestrated moment):** card from 24px below + blur 8px, 500ms ease-out; rows follow from 12px + blur 6px, 450ms, starting at 150ms with a 50ms stagger; the status ring draws over 800ms from 300ms.

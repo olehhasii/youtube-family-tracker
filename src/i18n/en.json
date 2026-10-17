@@ -37,5 +37,20 @@
     "received": "received {{date}}",
     "exempt": "Covers the plan and never needs to pay.",
     "noPayments": "Nothing recorded yet."
+  },
+  "island": {
+    "nextPayment": "Next payment",
+    "behind": "Behind",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "payments": "Payments",
+    "noneRecorded": "None recorded yet",
+    "label": "Status and menu",
+    "menu": "Menu",
+    "back": "Back",
+    "about": "About",
+    "switchLanguage": "{{current}} · switch language to Ukrainian",
+    "aboutText": "Shows which friends sharing a YouTube Premium Family plan have paid, and for which months. Only the Admin records payments.",
+    "github": "GitHub (opens in a new tab)"
   }
 }

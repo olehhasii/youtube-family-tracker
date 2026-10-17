@@ -49,6 +49,9 @@
   --color-unknown: rgb(115 115 115);
   --color-exempt: rgb(59 131 246);
 
+  /* The island's blue ••• button */
+  --color-island-blue: #0a84ff;
+
   /* Curves from CLAUDE.md "Motion"; `ease-out` is the strong UI curve */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
@@ -56,6 +59,7 @@
   --radius-card: 28px;
   --radius-detail: 20px;
   --radius-row: 14px;
+  --radius-island: 26px;
 }
 
 /* Press feedback from CLAUDE.md "Motion": `press` for wide buttons, `press-round` for round icon buttons */
@@ -70,6 +74,15 @@
   transition: transform 150ms var(--ease-out);
   &:active {
     transform: scale(0.92);
+  }
+}
+
+/* Hover only for a real mouse, so taps never leave a sticky hover (CLAUDE.md "Motion") */
+@custom-variant hover-fine {
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      @slot;
+    }
   }
 }
 
