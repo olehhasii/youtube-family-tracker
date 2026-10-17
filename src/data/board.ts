@@ -12,7 +12,7 @@ export type BoardTables = {
   payments: Tables['payments']['Row'][]
 }
 
-export type BoardMember = Member & { slug: string; avatarPath: string | null }
+export type BoardMember = Member & { slug: string; avatarPath: string | null; avatarUrl: string | null }
 
 export type BoardRow = {
   member: BoardMember
@@ -43,7 +43,12 @@ const toMember = (m: Tables['members']['Row']): BoardMember => ({
   exempt: m.exempt,
   slug: m.slug,
   avatarPath: m.avatar_path,
+  avatarUrl: m.avatar_path && publicAvatarUrl(m.avatar_path),
 })
+
+// Public bucket, so the URL can be built without a client (keeps this module free of Supabase).
+const publicAvatarUrl = (path: string) =>
+  `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/avatars/${path.split('/').map(encodeURIComponent).join('/')}`
 
 export function toBoard({ group, members, payments }: BoardTables, today: Day): Board {
   const allPayments = payments.map(toPayment)

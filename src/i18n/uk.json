@@ -2,7 +2,10 @@
   "board": {
     "empty": "Тут поки нікого немає.",
     "loading": "Завантаження…",
-    "error": "Не вдалося завантажити дані. Спробуйте ще раз."
+    "error": "Не вдалося завантажити дані. Спробуйте ще раз.",
+    "summary": "Сплачено {{paidUp}} з {{paying}} · {{price}} {{currency}} на місяць",
+    "ringLabel": "Сплачено {{paidUp}} з {{paying}}",
+    "summaryNobodyPays": "Ще ніхто не платить · {{price}} {{currency}} на місяць"
   },
   "status": {
     "paid": "Сплачено",
@@ -10,5 +13,37 @@
     "overdue": "Прострочено",
     "unknown": "Невідомо",
     "exempt": "Не платить"
+  },
+  "standing": {
+    "nextPayment": "Наступний платіж · {{date}}",
+    "paidThrough": "Сплачено по {{month}}",
+    "exempt": "Власник підписки",
+    "unknown": "Платежів ще немає",
+    "dueToday": "платіж сьогодні",
+    "inDays_one": "через {{count}} день",
+    "inDays_few": "через {{count}} дні",
+    "inDays_many": "через {{count}} днів",
+    "inDays_other": "через {{count}} дня",
+    "daysLate_one": "прострочено на {{count}} день",
+    "daysLate_few": "прострочено на {{count}} дні",
+    "daysLate_many": "прострочено на {{count}} днів",
+    "daysLate_other": "прострочено на {{count}} дня",
+    "monthsBehind_one": "Прострочено {{count}} місяць",
+    "monthsBehind_few": "Прострочено {{count}} місяці",
+    "monthsBehind_many": "Прострочено {{count}} місяців",
+    "monthsBehind_other": "Прострочено {{count}} місяця"
+  },
+  "detail": {
+    "close": "Закрити",
+    "nextPayment": "Наступний платіж",
+    "covered": "Покрито",
+    "monthsTotal_one": "{{count}} місяць загалом",
+    "monthsTotal_few": "{{count}} місяці загалом",
+    "monthsTotal_many": "{{count}} місяців загалом",
+    "monthsTotal_other": "{{count}} місяця загалом",
+    "history": "Платежі",
+    "received": "отримано {{date}}",
+    "exempt": "Власник підписки, платити не потрібно.",
+    "noPayments": "Платежів ще немає."
   }
 }

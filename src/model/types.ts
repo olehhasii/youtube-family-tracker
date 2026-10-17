@@ -35,3 +35,8 @@ export type Standing =
       /** Unpaid months up to and including the current one; 0 unless Overdue. */
       monthsBehind: number
     }
+
+/** A Standing with a Due Date: Paid, Due Soon or Overdue. */
+export type DatedStanding = Extract<Standing, { dueDate: Day }>
+
+export const isDated = (standing: Standing): standing is DatedStanding => 'dueDate' in standing

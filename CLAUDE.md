@@ -20,7 +20,10 @@ Values chosen in the Board prototype (branch `prototype/board-variants`, variant
 - **Island morph:** `{ type: 'spring', duration: 0.45, bounce: 0.2 }`; content swaps cross-fade with 4px blur + scale 0.96, 200ms ease-out.
 - **Status pill change:** `{ type: 'spring', duration: 0.4, bounce: 0.25 }` from scale 0.9 + opacity 0.
 - **Press feedback:** `active:scale-[0.97]` for wide buttons, `0.92` for round icon buttons, 150ms ease-out. Use the `press` / `press-round` utilities from `src/index.css`; JS presets live in `src/ui/motion.ts`.
-- **Page load (the one orchestrated moment):** card from 24px below + blur 8px, 500ms ease-out; rows follow with a 50ms stagger.
+- **Page load (the one orchestrated moment):** card from 24px below + blur 8px, 500ms ease-out; rows follow from 12px + blur 6px, 450ms, starting at 150ms with a 50ms stagger; the status ring draws over 800ms from 300ms.
+- **View swaps** (list ↔ detail card): the leaving view fades out in 150ms ease-out; content inside a freshly grown card fades in over 250ms after 150ms.
+- **Status colour changes** (ring segments, relative-date text): 250ms `ease`.
+- Every value above has a named preset in `src/ui/motion.ts`; use those, not literals.
 - **Toasts** live in the island for 2.6s.
 - Pair every animation with its `prefers-reduced-motion` variant (opacity only) and gate hover motion behind `(hover: hover) and (pointer: fine)`.
 

@@ -54,6 +54,7 @@
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
   --radius-card: 28px;
+  --radius-detail: 20px;
   --radius-row: 14px;
 }
 

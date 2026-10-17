@@ -2,7 +2,10 @@
   "board": {
     "empty": "No one here yet.",
     "loading": "Loading…",
-    "error": "Couldn't load the Board. Try again."
+    "error": "Couldn't load the Board. Try again.",
+    "summary": "{{paidUp}} of {{paying}} paid · {{price}} {{currency}} a month",
+    "ringLabel": "{{paidUp}} of {{paying}} paid up",
+    "summaryNobodyPays": "Nobody pays yet · {{price}} {{currency}} a month"
   },
   "status": {
     "paid": "Paid",
@@ -10,5 +13,29 @@
     "overdue": "Overdue",
     "unknown": "Unknown",
     "exempt": "Exempt"
+  },
+  "standing": {
+    "nextPayment": "Next payment · {{date}}",
+    "paidThrough": "Paid through {{month}}",
+    "exempt": "Covers the plan",
+    "unknown": "No payments yet",
+    "dueToday": "due today",
+    "inDays_one": "in {{count}} day",
+    "inDays_other": "in {{count}} days",
+    "daysLate_one": "{{count}} day late",
+    "daysLate_other": "{{count}} days late",
+    "monthsBehind_one": "{{count}} month behind",
+    "monthsBehind_other": "{{count}} months behind"
+  },
+  "detail": {
+    "close": "Close",
+    "nextPayment": "Next payment",
+    "covered": "Covered",
+    "monthsTotal_one": "{{count}} month in total",
+    "monthsTotal_other": "{{count}} months in total",
+    "history": "Payments",
+    "received": "received {{date}}",
+    "exempt": "Covers the plan and never needs to pay.",
+    "noPayments": "Nothing recorded yet."
   }
 }

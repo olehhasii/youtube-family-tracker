@@ -31,5 +31,29 @@ export function cardEntrance(reduce: boolean | null) {
 }
 export const STAGGER = 0.05
 
+/** Board rows following the card in on page load. */
+export function rowEntrance(reduce: boolean | null, index: number) {
+  return {
+    initial: reduce ? { opacity: 0 } : { opacity: 0, y: 12, filter: 'blur(6px)' },
+    animate: reduce ? { opacity: 1 } : { opacity: 1, y: 0, filter: 'blur(0px)' },
+    transition: { duration: 0.45, ease: EASE_OUT, delay: 0.15 + index * STAGGER, layout: layoutSpring },
+  }
+}
+
+/** The status ring drawing its segments after the card lands. */
+export const ringDraw = (index: number): Transition => ({ duration: 0.8, ease: EASE_OUT, delay: 0.3 + index * STAGGER })
+
+/** A view leaving while another takes its place (list ↔ detail card). */
+export const viewExit: Transition = { duration: 0.15, ease: EASE_OUT }
+
+/** Content inside a card that has just grown, fading in once the card has mostly settled. */
+export const settledContentFade: Transition = { delay: 0.15, duration: 0.25, ease: EASE_OUT }
+
+/** CSS transition for a colour that follows a Status change. */
+export const STATUS_COLOR_TRANSITION = 'stroke 250ms ease, color 250ms ease'
+
+/** Corner radii as numbers, for elements whose radius Motion must keep correct during layout animations (match src/index.css). */
+export const RADIUS = { card: 28, detail: 20, row: 14 } as const
+
 /** How long a toast stays in the island, in ms. */
 export const TOAST_MS = 2600
