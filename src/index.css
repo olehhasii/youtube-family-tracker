@@ -1,111 +1,117 @@
+@import 'tailwindcss';
+
+/* Palette from the old app. Dark is the default; light applies with data-theme="light" on <html>. */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --page: #0a0a0a;
+  --card: #171717;
+  --raised: #262626;
+  --accent: #404040;
+  --fg: #fafafa;
+  --muted: #a1a1a1;
+  --primary: #e5e5e5;
+  --primary-fg: #0a0a0a;
+  --border: rgb(255 255 255 / 0.1);
+  color-scheme: dark;
+}
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+:root[data-theme='light'] {
+  --page: #ffffff;
+  --card: #f8f9fa;
+  --raised: #f1f3f4;
+  --accent: #e9ecef;
+  --fg: #212529;
+  --muted: #6c757d;
+  --primary: #212529;
+  --primary-fg: #ffffff;
+  --border: rgb(0 0 0 / 0.08);
+  color-scheme: light;
+}
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@theme inline {
+  --color-page: var(--page);
+  --color-card: var(--card);
+  --color-raised: var(--raised);
+  --color-accent: var(--accent);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-fg: var(--primary-fg);
+  --color-border: var(--border);
+}
 
-  @media (max-width: 1024px) {
-    font-size: 16px;
+@theme {
+  --font-sans: Inter, ui-sans-serif, system-ui, sans-serif;
+
+  /* Status colours, the same in both themes */
+  --color-paid: rgb(34 197 94);
+  --color-due-soon: rgb(234 178 8);
+  --color-overdue: rgb(220 38 38);
+  --color-unknown: rgb(115 115 115);
+  --color-exempt: rgb(59 131 246);
+
+  /* Curves from CLAUDE.md "Motion"; `ease-out` is the strong UI curve */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --radius-card: 28px;
+  --radius-row: 14px;
+}
+
+/* Press feedback from CLAUDE.md "Motion": `press` for wide buttons, `press-round` for round icon buttons */
+@utility press {
+  transition: transform 150ms var(--ease-out);
+  &:active {
+    transform: scale(0.97);
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
+@utility press-round {
+  transition: transform 150ms var(--ease-out);
+  &:active {
+    transform: scale(0.92);
   }
 }
 
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+/* Horizontal page padding that also clears a landscape notch */
+@utility px-safe {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+}
+
+/* Mobile baseline (see the mobile-native skill) */
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  overscroll-behavior: none;
+  font-feature-settings: 'cv11', 'ss01';
 }
 
 body {
   margin: 0;
+  min-height: 100dvh;
+  background: var(--page);
+  color: var(--fg);
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+input,
+textarea,
+select {
+  font-size: 16px;
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
-  margin: 0;
+button,
+a,
+[role='button'] {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+button {
+  cursor: pointer;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
 }
