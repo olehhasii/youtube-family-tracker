@@ -1,8 +1,11 @@
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useBoard } from '../../data'
+import { type BoardRow, useAdmin, useBoard, useRemoveLatestPayment } from '../../data'
+import { RecordPaymentSheet } from '../admin/RecordPaymentSheet'
 import { Island } from '../island/Island'
+import { useToast } from '../island/toast'
+import { describePaymentMonths } from './describe-payment'
 import { RADIUS, cardEntrance, layoutSpring, viewExit } from '../../ui/motion'
 import { DetailCard } from './DetailCard'
 import { describeStanding } from './describe-standing'
@@ -15,7 +18,11 @@ export function BoardPage() {
   const lng = toLanguage(i18n.resolvedLanguage)
   const reduce = useReducedMotion()
   const board = useBoard()
+  const admin = useAdmin()
+  const removeLatestPayment = useRemoveLatestPayment()
+  const toast = useToast()
   const [openId, setOpenId] = useState<string | null>(null)
+  const [recordingId, setRecordingId] = useState<string | null>(null)
   const [returnFocusTo, setReturnFocusTo] = useState<string | null>(null) // the row whose card just closed
 
   const open = (id: string) => {
@@ -26,6 +33,23 @@ export function BoardPage() {
     setReturnFocusTo(openId)
     setOpenId(null)
   }
+
+  // gone from the Board at once; deleted when the undo toast ends
+  const removeLatest = (row: BoardRow) => {
+    const removal = removeLatestPayment(row)
+    if (!removal) return
+    const { name } = row.member
+    toast(t('admin.removed', { name, months: describePaymentMonths(removal.payment, lng) }), {
+      action: { label: t('admin.undo'), run: removal.undo },
+      onExpire: () =>
+        removal.commit().catch((error: unknown) => {
+          toast(t('admin.removeFailed', { name }), { tone: 'error' })
+          throw error // so a write waiting on this removal doesn't go ahead
+        }),
+    })
+  }
+
+  const recordFor = (row: BoardRow) => (admin && !row.member.exempt ? () => setRecordingId(row.member.id) : undefined)
 
   const message = (text: string) => <p className="px-1 py-6 text-center text-sm text-muted">{text}</p>
 
@@ -67,6 +91,8 @@ export function BoardPage() {
                 lng={lng}
                 currentYear={Number(today.slice(0, 4))}
                 onClose={close}
+                onRecord={recordFor(opened)}
+                onRemoveLatest={admin ? () => removeLatest(opened) : undefined}
               />
             ) : (
               <motion.ul key="list" className="flex flex-col gap-1.5" exit={{ opacity: 0 }} transition={viewExit}>
@@ -78,6 +104,7 @@ export function BoardPage() {
                     index={i}
                     focusOnMount={row.member.id === returnFocusTo}
                     onOpen={() => open(row.member.id)}
+                    onRecord={recordFor(row)}
                   />
                 ))}
               </motion.ul>
@@ -101,6 +128,13 @@ export function BoardPage() {
         {content}
       </motion.main>
       <Island board={board.data} />
+      {board.data && (
+        <RecordPaymentSheet
+          row={(admin && board.data.rows.find((r) => r.member.id === recordingId)) || null} // closes if the session ends
+          today={board.data.today}
+          onClose={() => setRecordingId(null)}
+        />
+      )}
     </div>
   )
 }

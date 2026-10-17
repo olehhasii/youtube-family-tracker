@@ -1,13 +1,23 @@
-import { act, render, screen } from '@testing-library/react'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { useEffect } from 'react'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import { type Board, toBoard } from '../../../data/board'
+import { isSignedIn, signIn, signOut } from '../../../data/queries'
 import i18n from '../../../i18n'
 import { TOAST_MS } from '../../../ui/motion'
 import { Island } from '../Island'
 import { useToast } from '../toast'
 import { ToastProvider } from '../ToastProvider'
+
+// Stand in for the network only.
+vi.mock('../../../data/queries', () => ({
+  isSignedIn: vi.fn(),
+  onSignedInChange: vi.fn(() => () => {}),
+  signIn: vi.fn(),
+  signOut: vi.fn(),
+}))
 
 const member = (slug: string, position: number) => ({
   id: `id-${slug}`,
@@ -37,15 +47,22 @@ function RaiseToast({ text }: { text: string | null }) {
   return null
 }
 
+let queryClient: QueryClient
 const ui = (data: Board | undefined, toast: string | null = null) => (
-  <ToastProvider>
-    <RaiseToast text={toast} />
-    <Island board={data} />
-  </ToastProvider>
+  <QueryClientProvider client={queryClient}>
+    <ToastProvider>
+      <RaiseToast text={toast} />
+      <Island board={data} />
+    </ToastProvider>
+  </QueryClientProvider>
 )
 const renderIsland = (data: Board | undefined) => render(ui(data))
 
-beforeEach(() => i18n.changeLanguage('uk'))
+beforeEach(() => {
+  queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } })
+  vi.mocked(isSignedIn).mockResolvedValue(false)
+  return i18n.changeLanguage('uk')
+})
 afterEach(() => vi.useRealTimers())
 
 describe('Island', () => {
@@ -116,5 +133,49 @@ describe('Island', () => {
     expect(screen.queryByRole('img')).not.toBeInTheDocument()
     await user.click(screen.getByRole('button', { name: 'Меню' }))
     expect(screen.getByRole('link', { name: /GitHub/ })).toBeInTheDocument()
+  })
+
+  describe('Admin sign-in', () => {
+    test('the island grows into a sign-in form; signing in says so and goes back to rest', async () => {
+      vi.mocked(signIn).mockResolvedValue(true)
+      const user = userEvent.setup()
+      renderIsland(board)
+
+      await user.click(screen.getByRole('button', { name: 'Меню' }))
+      await user.click(screen.getByRole('button', { name: 'Увійти як адміністратор' }))
+      expect(screen.getByLabelText('Пошта')).toHaveFocus()
+      await user.type(screen.getByLabelText('Пошта'), 'admin@example.com')
+      await user.type(screen.getByLabelText('Пароль'), 'secret{Enter}')
+
+      expect(signIn).toHaveBeenCalledWith({ email: 'admin@example.com', password: 'secret' })
+      await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Ви увійшли як адміністратор'))
+      expect(screen.queryByLabelText('Пошта')).not.toBeInTheDocument()
+    })
+
+    test('a wrong password keeps the form open with a message', async () => {
+      vi.mocked(signIn).mockResolvedValue(false)
+      const user = userEvent.setup()
+      renderIsland(board)
+
+      await user.click(screen.getByRole('button', { name: 'Меню' }))
+      await user.click(screen.getByRole('button', { name: 'Увійти як адміністратор' }))
+      await user.type(screen.getByLabelText('Пошта'), 'admin@example.com')
+      await user.type(screen.getByLabelText('Пароль'), 'wrong{Enter}')
+
+      expect(await screen.findByRole('alert')).toHaveTextContent('Неправильна пошта або пароль')
+      expect(screen.getByLabelText('Пароль')).toHaveValue('')
+    })
+
+    test('the signed-in Admin can sign out from the menu', async () => {
+      vi.mocked(isSignedIn).mockResolvedValue(true)
+      vi.mocked(signOut).mockResolvedValue()
+      const user = userEvent.setup()
+      renderIsland(board)
+
+      await user.click(screen.getByRole('button', { name: 'Меню' }))
+      await user.click(await screen.findByRole('button', { name: 'Вийти' }))
+      expect(signOut).toHaveBeenCalled()
+      await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('Ви вийшли'))
+    })
   })
 })

@@ -3,14 +3,15 @@ import i18n from '../../i18n'
 import type { Payment } from '../../model'
 import { type Language, LOCALE, utcDate } from './locale'
 
-function monthAt(firstMonth: string, offset: number) {
+/** The month `offset` months after `firstMonth`, as UTC midnight on its 1st. */
+export function monthAt(firstMonth: string, offset: number) {
   const d = utcDate(firstMonth)
   d.setUTCMonth(d.getUTCMonth() + offset)
   return d
 }
 
 /** "травень – липень 2026", "October 2026", "December 2026 – January 2027". */
-export function describePaymentMonths(payment: Payment, lng: Language): string {
+export function describePaymentMonths(payment: Pick<Payment, 'firstMonth' | 'months'>, lng: Language): string {
   const name = new Intl.DateTimeFormat(LOCALE[lng], { month: 'long', timeZone: 'UTC' })
   const first = monthAt(payment.firstMonth, 0)
   const last = monthAt(payment.firstMonth, payment.months - 1)

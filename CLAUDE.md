@@ -19,7 +19,8 @@ Values chosen in the Board prototype (branch `prototype/board-variants`, variant
 - **Layout springs** (row ↔ detail card, card resize): `{ type: 'spring', duration: 0.5, bounce: 0.12 }`.
 - **Island morph:** `{ type: 'spring', duration: 0.45, bounce: 0.2 }`; content swaps cross-fade with 4px blur + scale 0.96, 200ms ease-out.
 - **Island entrance:** rises from 40px below with the island spring, 400ms after page load.
-- **Rolling letters** (UA ↔ EN): old label out 10px up, new one in from 10px below, 200ms ease-out.
+- **Rolling letters** (UA ↔ EN, the month count in the record sheet): old label out 10px up, new one in from 10px below, 200ms ease-out.
+- **Month strip fill** (record sheet): each cell scales in from the left, 250ms ease-out, 30ms apart; emptying is immediate-start.
 - **Status pill change:** `{ type: 'spring', duration: 0.4, bounce: 0.25 }` from scale 0.9 + opacity 0.
 - **Press feedback:** `active:scale-[0.97]` for wide buttons, `0.92` for round icon buttons, 150ms ease-out. Use the `press` / `press-round` utilities from `src/index.css`; JS presets live in `src/ui/motion.ts`.
 - **Page load (the one orchestrated moment):** card from 24px below + blur 8px, 500ms ease-out; rows follow from 12px + blur 6px, 450ms, starting at 150ms with a 50ms stagger; the status ring draws over 800ms from 300ms.

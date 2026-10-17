@@ -51,6 +51,35 @@
     "about": "About",
     "switchLanguage": "{{current}} · switch language to Ukrainian",
     "aboutText": "Shows which friends sharing a YouTube Premium Family plan have paid, and for which months. Only the Admin records payments.",
-    "github": "GitHub (opens in a new tab)"
+    "github": "GitHub (opens in a new tab)",
+    "signInAsAdmin": "Sign in as Admin",
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "email": "Email",
+    "password": "Password",
+    "wrongCredentials": "Wrong email or password",
+    "signInFailed": "Couldn't sign in. Try again.",
+    "signedIn": "Signed in as Admin",
+    "signedOut": "Signed out",
+    "signOutFailed": "Couldn't sign out. Try again."
+  },
+  "admin": {
+    "recordFor": "Record payment: {{name}}",
+    "sheetTitle": "Record payment · {{name}}",
+    "sheetHint": "Months continue from the first unpaid one.",
+    "fewer": "Fewer months",
+    "more": "More months",
+    "months_one": "{{count}} month",
+    "months_other": "{{count}} months",
+    "record_one": "Record {{count}} month",
+    "record_other": "Record {{count}} months",
+    "recorded": "{{name}} · {{months}} recorded",
+    "recordFailed": "Couldn't record {{name}}'s payment",
+    "recordPayment": "Record payment",
+    "remove": "Remove",
+    "removeLabel": "Remove payment: {{months}}",
+    "removed": "{{name}} · {{months}} removed",
+    "undo": "Undo",
+    "removeFailed": "Couldn't remove {{name}}'s payment"
   }
 }

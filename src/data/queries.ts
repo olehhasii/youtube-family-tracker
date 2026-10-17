@@ -1,6 +1,6 @@
 // Reads and writes against Supabase. Payments only change through the database functions (ADR 0001).
 import type { Day } from '../model'
-import { type Board, toBoard } from './board'
+import { type Board, type BoardTables, toBoard } from './board'
 import type { Database } from './database.types'
 import { supabase } from './supabase'
 import { kyivToday } from './today'
@@ -8,6 +8,11 @@ import { kyivToday } from './today'
 type Tables = Database['public']['Tables']
 
 export async function fetchBoard(today: Day = kyivToday()): Promise<Board> {
+  return toBoard(await fetchBoardTables(), today)
+}
+
+/** The rows the Board is built from, as stored. */
+export async function fetchBoardTables(): Promise<BoardTables> {
   const [group, members, payments] = await Promise.all([
     supabase.from('groups').select('*').maybeSingle(), // none until the Admin creates it
     supabase.from('members').select('*'),
@@ -16,7 +21,7 @@ export async function fetchBoard(today: Day = kyivToday()): Promise<Board> {
   if (group.error) throw group.error
   if (members.error) throw members.error
   if (payments.error) throw payments.error
-  return toBoard({ group: group.data, members: members.data, payments: payments.data }, today)
+  return { group: group.data, members: members.data, payments: payments.data }
 }
 
 export async function recordPayment(memberId: string, months: number) {
@@ -24,8 +29,35 @@ export async function recordPayment(memberId: string, months: number) {
   if (error) throw error
 }
 
-export async function deleteLatestPayment(memberId: string) {
-  const { error } = await supabase.rpc('delete_latest_payment', { p_member_id: memberId })
+/** Deletes the Member's latest Payment; with `paymentId`, only if that is still the latest (else throws). */
+export async function deleteLatestPayment(memberId: string, paymentId?: string) {
+  const { error } = await supabase.rpc('delete_latest_payment', { p_member_id: memberId, p_payment_id: paymentId })
+  if (error) throw error
+}
+
+// The Admin is the only account (sign-ups are off), so being signed in means being the Admin.
+export async function isSignedIn() {
+  const { data, error } = await supabase.auth.getSession()
+  if (error) throw error
+  return data.session !== null
+}
+
+/** Calls `listener` whenever someone signs in or out; returns the unsubscribe. */
+export function onSignedInChange(listener: (signedIn: boolean) => void) {
+  const { data } = supabase.auth.onAuthStateChange((_event, session) => listener(session !== null))
+  return () => data.subscription.unsubscribe()
+}
+
+/** False for a wrong email or password; throws when signing in failed for another reason. */
+export async function signIn({ email, password }: { email: string; password: string }) {
+  const { error } = await supabase.auth.signInWithPassword({ email, password })
+  if (error?.code === 'invalid_credentials') return false
+  if (error) throw error
+  return true
+}
+
+export async function signOut() {
+  const { error } = await supabase.auth.signOut()
   if (error) throw error
 }
 

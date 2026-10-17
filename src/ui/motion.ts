@@ -30,6 +30,14 @@ export function letterRoll(reduce: boolean | null) {
   }
 }
 
+/** One cell of the record-payment month strip filling (or emptying) from the left; cells follow each other. */
+export function stripFill(reduce: boolean | null, on: boolean, index: number) {
+  return {
+    animate: reduce ? { opacity: on ? 1 : 0 } : { scaleX: on ? 1 : 0 },
+    transition: { duration: 0.25, ease: EASE_OUT, delay: on ? index * 0.03 : 0 },
+  }
+}
+
 /** Status pill swapping to a new Status. */
 export const pillSpring: Transition = { type: 'spring', duration: 0.4, bounce: 0.25 }
 

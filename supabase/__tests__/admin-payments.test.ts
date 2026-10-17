@@ -125,6 +125,19 @@ describe('delete_latest_payment (as the Admin)', () => {
     expect(left?.map((p) => p.id)).toEqual([first!.id])
   })
 
+  test('with a Payment id, deletes only if that Payment is still the latest', async () => {
+    const id = await tempMember()
+    const { data: first } = await record(id, 2)
+    const { data: second } = await record(id, 1)
+
+    const stale = await admin.rpc('delete_latest_payment', { p_member_id: id, p_payment_id: first!.id })
+    expect(stale.error?.code).toBe('PT409')
+
+    const { data: removed, error } = await admin.rpc('delete_latest_payment', { p_member_id: id, p_payment_id: second!.id })
+    expect(error).toBeNull()
+    expect(removed?.id).toBe(second!.id)
+  })
+
   test('does nothing for a Member without Payments', async () => {
     const id = await tempMember()
     const { data, error } = await admin.rpc('delete_latest_payment', { p_member_id: id })

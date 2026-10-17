@@ -1,17 +1,18 @@
-// The black pill at the bottom of the Board. One component owns all its states: at rest, menu, about and toast.
+// The black pill at the bottom of the Board. One component owns all its states: at rest, menu, about, sign-in and toast.
 import { AnimatePresence, motion, useIsPresent, useReducedMotion } from 'motion/react'
 import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import type { Board } from '../../data'
+import { type Board, useAdmin, useSignOut } from '../../data'
 import { RADIUS, islandContentSwap, islandEntrance, islandSpring, letterRoll } from '../../ui/motion'
 import { StatusRing } from '../board/StatusRing'
 import { toLanguage } from '../board/locale'
 import { describeHeadline } from './describe-headline'
-import { useCurrentToast } from './toast'
+import { SignInForm } from './SignInForm'
+import { useIslandToast, useSettleToast, useToast } from './toast'
 
 const REPO_URL = 'https://github.com/olehhasii/youtube-family-tracker'
 
-type Mode = 'rest' | 'menu' | 'about'
+type Mode = 'rest' | 'menu' | 'about' | 'signIn'
 type IslandView = Mode | 'toast'
 
 type Props = {
@@ -23,7 +24,11 @@ export function Island({ board }: Props) {
   const { t, i18n } = useTranslation()
   const lng = toLanguage(i18n.resolvedLanguage)
   const reduce = useReducedMotion()
-  const toast = useCurrentToast()
+  const { toast, runAction, setPaused } = useIslandToast()
+  const showToast = useToast()
+  const settleToast = useSettleToast()
+  const admin = useAdmin()
+  const signOut = useSignOut()
   // `from` picks where focus lands: going back focuses the button that led forward
   const [{ mode, from }, setView] = useState<{ mode: Mode; from: IslandView | null }>({ mode: 'rest', from: null })
   const go = (next: Mode) => setView({ mode: next, from: mode })
@@ -33,7 +38,8 @@ export function Island({ board }: Props) {
   // Whether focus is in the island. A focused button that is removed with its content may blur
   // (with nowhere to go) or not, so only a blur that leaves a still-mounted element counts as leaving.
   const focusWithin = useRef(false)
-  const lastIslandView = useRef(shown)
+  const viewKey = toast ? `toast-${toast.id}` : mode // a newer toast is new content too
+  const lastViewKey = useRef(viewKey)
   const focusOnEnter = useRef<IslandView | null>(null)
   const focusInto = (panel: Element) => {
     panel.querySelector<HTMLElement>('[data-autofocus]')?.focus()
@@ -42,21 +48,39 @@ export function Island({ board }: Props) {
   // When the content swaps under the user's focus, focus the new content. It may mount in a later
   // commit (AnimatePresence), so the island holds focus until the panel takes it in `onEnter`.
   useLayoutEffect(() => {
-    if (lastIslandView.current === shown) return
-    lastIslandView.current = shown
+    if (lastViewKey.current === viewKey) return
+    lastViewKey.current = viewKey
     const island = root.current
     const active = document.activeElement
-    if (!island || !focusWithin.current || (active !== document.body && !island.contains(active))) return
+    const lost = active === document.body
+    const wasHere = focusWithin.current && (lost || !!island?.contains(active))
+    // an action (Undo) also takes focus that its own cause just lost, e.g. a removed history row
+    const reachAction = shown === 'toast' && !!toast?.action && lost
+    if (!island || (!wasHere && !reachAction)) return
     island.focus()
     focusOnEnter.current = shown
     const entered = island.querySelector(`[data-panel="${shown}"]`)
     if (entered) focusInto(entered)
-  }, [shown])
+  }, [viewKey, shown, toast])
   const onEnter = (name: IslandView, panel: HTMLDivElement) => {
     if (focusOnEnter.current === name) focusInto(panel)
   }
 
-  const back = () => go(mode === 'about' ? 'menu' : 'rest')
+  const back = () => go(mode === 'menu' ? 'rest' : 'menu')
+  const signedIn = () => {
+    go('rest')
+    showToast(t('island.signedIn'))
+  }
+  const leave = async () => {
+    try {
+      await settleToast() // a removal waiting on its undo toast still needs the Admin's rights
+      await signOut.mutateAsync()
+      go('rest')
+      showToast(t('island.signedOut'))
+    } catch {
+      showToast(t('island.signOutFailed'), { tone: 'error' })
+    }
+  }
   const swap = islandContentSwap(reduce)
   const entrance = islandEntrance(reduce)
   const paying = board?.rows.filter((r) => r.standing.status !== 'exempt') ?? []
@@ -76,11 +100,19 @@ export function Island({ board }: Props) {
         transition={{ ...entrance.transition, layout: islandSpring }}
         tabIndex={-1} // holds focus while a toast covers the buttons
         aria-label={t('island.label')}
-        onFocus={() => (focusWithin.current = true)}
+        onFocus={(e) => {
+          focusWithin.current = true
+          // only keyboard focus holds the timer: a tap leaves focus behind on phones, which would hold it forever
+          if (e.target.matches(':focus-visible')) setPaused(true)
+        }}
         onBlur={(e) => {
           const target = e.target as HTMLElement
-          if (!e.currentTarget.contains(e.relatedTarget) && target.isConnected && !target.closest('[inert]')) focusWithin.current = false
+          const left = !e.currentTarget.contains(e.relatedTarget)
+          if (left) setPaused(false)
+          if (left && target.isConnected && !target.closest('[inert]')) focusWithin.current = false
         }}
+        onPointerEnter={() => setPaused(true)}
+        onPointerLeave={() => setPaused(root.current?.contains(document.activeElement) ?? false)}
         onKeyDown={(e) => {
           if (e.key === 'Escape' && mode !== 'rest') back() // also under a toast, for what comes back after it
         }}
@@ -89,11 +121,18 @@ export function Island({ board }: Props) {
       >
         <AnimatePresence mode="popLayout" initial={false}>
           {shown === 'toast' && (
-            <Panel key={`toast-${toast!.id}`} name="toast" swap={swap} onEnter={onEnter} className="flex items-center gap-3 pr-4" aria-hidden>
-              <span className="grid size-10 shrink-0 place-items-center rounded-full bg-paid text-black">
-                <IconCheck />
+            <Panel key={`toast-${toast!.id}`} name="toast" swap={swap} onEnter={onEnter} className={`flex items-center gap-3 ${toast!.action ? '' : 'pr-4'}`}>
+              <span className={`grid size-10 shrink-0 place-items-center rounded-full text-black ${toast!.tone === 'error' ? 'bg-overdue' : 'bg-paid'}`}>
+                {toast!.tone === 'error' ? <IconCross /> : <IconCheck />}
               </span>
-              <span className="min-w-0 truncate">{toast!.text}</span>
+              <span className="min-w-0 truncate" aria-hidden>
+                {toast!.text}
+              </span>
+              {toast!.action && (
+                <button data-autofocus className="h-10 shrink-0 rounded-full bg-white/10 px-4 font-medium press" onClick={runAction}>
+                  {toast!.action.label}
+                </button>
+              )}
             </Panel>
           )}
 
@@ -127,13 +166,22 @@ export function Island({ board }: Props) {
 
           {shown === 'menu' && (
             <Panel key="menu" name="menu" swap={swap} onEnter={onEnter} className="flex items-center gap-1" role="group" aria-label={t('island.menu')}>
-              <BackButton data-autofocus={from !== 'about' || undefined} onClick={back} />
+              <BackButton data-autofocus={from === 'rest' || undefined} onClick={back} />
               <IconButton data-autofocus={from === 'about' || undefined} label={t('island.about')} onClick={() => go('about')}>
                 <IconInfo />
               </IconButton>
               <a href={REPO_URL} target="_blank" rel="noreferrer" aria-label={t('island.github')} title="GitHub" className={ICON_BUTTON}>
                 <IconCode />
               </a>
+              {admin ? (
+                <IconButton label={t('island.signOut')} className={`${ICON_BUTTON} bg-island-blue`} onClick={() => void leave()}>
+                  <IconKey />
+                </IconButton>
+              ) : (
+                <IconButton data-autofocus={from === 'signIn' || undefined} label={t('island.signInAsAdmin')} onClick={() => go('signIn')}>
+                  <IconKey />
+                </IconButton>
+              )}
             </Panel>
           )}
 
@@ -141,6 +189,12 @@ export function Island({ board }: Props) {
             <Panel key="about" name="about" swap={swap} onEnter={onEnter} className="flex w-80 max-w-full flex-col items-start gap-3 p-2.5">
               <p className="leading-relaxed text-white/80">{t('island.aboutText')}</p>
               <BackButton data-autofocus onClick={back} />
+            </Panel>
+          )}
+
+          {shown === 'signIn' && (
+            <Panel key="signIn" name="signIn" swap={swap} onEnter={onEnter} className="w-80 max-w-full p-2.5">
+              <SignInForm onSignedIn={signedIn} back={<BackButton type="button" onClick={back} />} />
             </Panel>
           )}
         </AnimatePresence>
@@ -218,4 +272,6 @@ const IconBack = () => (<svg {...svg} width={16} height={16}><path d="M19 12H5M1
 const IconDots = () => (<svg {...svg}><circle cx="5" cy="12" r="1.2" fill="currentColor" /><circle cx="12" cy="12" r="1.2" fill="currentColor" /><circle cx="19" cy="12" r="1.2" fill="currentColor" /></svg>)
 const IconInfo = () => (<svg {...svg}><circle cx="12" cy="12" r="9" /><path d="M12 16v-4M12 8h.01" /></svg>)
 const IconCode = () => (<svg {...svg}><path d="m16 18 6-6-6-6M8 6l-6 6 6 6" /></svg>)
+const IconKey = () => (<svg {...svg}><circle cx="7.5" cy="15.5" r="4.5" /><path d="m10.7 12.3 9.8-9.8M17 6l3 3M14 9l2 2" /></svg>)
+const IconCross = () => (<svg {...svg} strokeWidth={3}><path d="M18 6 6 18M6 6l12 12" /></svg>)
 const IconCheck = () => (<svg {...svg} strokeWidth={3}><path d="M20 6 9 17l-5-5" /></svg>)

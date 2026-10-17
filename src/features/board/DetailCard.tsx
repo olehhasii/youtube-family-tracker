@@ -11,10 +11,20 @@ import { memberLayoutId } from './layout-ids'
 import type { Language } from './locale'
 import { STATUS_COLOR } from './status-colors'
 
-type Props = { row: BoardRow; wording: StandingText; lng: Language; currentYear: number; onClose: () => void }
+type Props = {
+  row: BoardRow
+  wording: StandingText
+  lng: Language
+  currentYear: number
+  onClose: () => void
+  /** Admin only, for Paying Members: opens the record-payment sheet. */
+  onRecord?: () => void
+  /** Admin only: removes the latest Payment (the only one that can go). */
+  onRemoveLatest?: () => void
+}
 
 /** A Member's details: next payment, months covered and their Payment history. Grows out of their MemberRow. */
-export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose }: Props) {
+export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose, onRecord, onRemoveLatest }: Props) {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
   const close = useRef<HTMLButtonElement>(null)
@@ -70,14 +80,31 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
 
             <h3 className="sr-only">{t('detail.history')}</h3>
             <ol className="mt-3 flex flex-col">
-              {payments.map((p) => (
+              {payments.map((p, i) => (
                 <li key={p.id} className="flex items-center justify-between gap-3 border-t border-border py-2.5 text-sm">
                   <span>{describePaymentMonths(p, lng)}</span>
-                  <span className="text-muted">{describeReceived(p, lng, currentYear)}</span>
+                  <span className="flex items-center gap-3 text-muted">
+                    {describeReceived(p, lng, currentYear)}
+                    {/* newest first, so the first is the latest */}
+                    {onRemoveLatest && i === 0 && (
+                      <button
+                        className="text-overdue press"
+                        aria-label={t('admin.removeLabel', { months: describePaymentMonths(p, lng) })}
+                        onClick={onRemoveLatest}
+                      >
+                        {t('admin.remove')}
+                      </button>
+                    )}
+                  </span>
                 </li>
               ))}
             </ol>
           </>
+        )}
+        {onRecord && (
+          <button className="mt-3 h-12 w-full rounded-2xl bg-primary font-semibold text-primary-fg press" onClick={onRecord}>
+            {t('admin.recordPayment')}
+          </button>
         )}
       </motion.div>
     </motion.section>

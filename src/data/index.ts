@@ -2,11 +2,15 @@
 export type { Board, BoardMember, BoardRow } from './board'
 export {
   useAddMember,
+  useAdmin,
   useBoard,
   useKyivToday,
   useDeleteLatestPayment,
   useDeleteMember,
   useRecordPayment,
+  useRemoveLatestPayment,
+  useSignIn,
+  useSignOut,
   useUpdateGroup,
   useUpdateMember,
 } from './hooks'

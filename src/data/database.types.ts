@@ -118,7 +118,7 @@ export type Database = {
     }
     Functions: {
       delete_latest_payment: {
-        Args: { p_member_id: string }
+        Args: { p_member_id: string; p_payment_id?: string }
         Returns: {
           created_at: string
           first_month: string
