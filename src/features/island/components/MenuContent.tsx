@@ -1,9 +1,9 @@
 import type { ComponentProps } from 'react'
 import { useTranslation } from 'react-i18next'
 import { IconCode, IconInfo, IconKey } from '../../../shared/ui/icons'
+import { REPO_URL } from '../helpers/repo-url'
 import { BackButton } from './BackButton'
 
-const REPO_URL = 'https://github.com/olehhasii/youtube-family-tracker'
 const ICON_BUTTON = 'grid size-10 place-items-center rounded-full press-round hover-fine:bg-island-fg/10'
 
 type Props = {

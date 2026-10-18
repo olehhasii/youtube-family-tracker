@@ -5,6 +5,7 @@ import type { Board } from '../../data/board'
 import { useAdmin, useSignOut } from '../../data/hooks/use-auth'
 import { ISLAND_PILL, RADIUS, REVEAL, islandContentSwap, islandEntrance, islandSpring } from '../../shared/lib/motion'
 import { useIslandToast, useSettleToast, useToast } from '../../shared/toast/use-toast'
+import { AboutContent } from './components/AboutContent'
 import { BackButton } from './components/BackButton'
 import { MenuContent } from './components/MenuContent'
 import { Panel } from './components/Panel'
@@ -117,7 +118,7 @@ export function Island({ board }: { board: Board | undefined }) {
 
           {shown === 'about' && (
             <Panel key="about" name="about" {...panel} className="flex w-80 max-w-full flex-col items-start gap-3 p-2.5">
-              <p className="leading-relaxed text-island-fg/80">{t('island.aboutText')}</p>
+              <AboutContent />
               <BackButton data-autofocus onClick={back} />
             </Panel>
           )}

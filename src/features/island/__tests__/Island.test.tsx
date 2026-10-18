@@ -123,7 +123,8 @@ describe('Island', () => {
 
     await user.click(screen.getByRole('button', { name: 'Меню' }))
     await user.click(screen.getByRole('button', { name: 'Про застосунок' }))
-    expect(screen.getByText(/YouTube Premium Family/)).toBeInTheDocument()
+    expect(screen.getByText(/сімейну підписку YouTube Premium/)).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'GitHub' })).toHaveAttribute('href', 'https://github.com/olehhasii/youtube-family-tracker')
 
     await user.keyboard('{Escape}')
     expect(screen.getByRole('button', { name: 'Про застосунок' })).toHaveFocus()
