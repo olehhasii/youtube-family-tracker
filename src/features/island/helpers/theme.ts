@@ -2,7 +2,7 @@ export type Theme = 'dark' | 'light'
 
 // index.html reads the same key before first paint, so a saved light theme never flashes dark
 export const THEME_KEY = 'theme'
-const THEME_COLOR: Record<Theme, string> = { dark: '#15193f', light: '#1a84c4' }
+const THEME_COLOR: Record<Theme, string> = { dark: '#0b0d22', light: '#1a84c4' }
 
 export function currentTheme(): Theme {
   return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
@@ -24,12 +24,7 @@ function apply(theme: Theme) {
 /** Switches the theme, cross-fading the whole page where View Transitions exist (CLAUDE.md "Motion"). */
 export function setTheme(theme: Theme, reduce: boolean) {
   if (reduce || !document.startViewTransition) return apply(theme)
-  // two frames, so the background canvas has redrawn in the new palette before the new snapshot is taken
-  document.startViewTransition(
-    () =>
-      new Promise<void>((resolve) => {
-        apply(theme)
-        requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
-      }),
-  )
+  // the update must not wait for frames: rendering is paused until it returns. The new side of the transition is
+  // live, so the background canvas repaints in the new palette while the page fades.
+  document.startViewTransition(() => apply(theme))
 }

@@ -5,10 +5,10 @@
 /* The Sky look (spec "Look"). Dark is the default (bare :root); light is chosen from the island and saved per device. */
 :root {
   /* the background palette: the ASCII sky (src/fx) and its CSS fallback below both paint with these */
-  --bg-top: #15193f;
-  --bg-middle: #4a3283;
-  --bg-bottom: #c76d8a;
-  --bg-glow: #ffc58f;
+  --bg-top: #0b0d22;
+  --bg-middle: #261a4a;
+  --bg-bottom: #6e3a55;
+  --bg-glow: #b98a66;
   --on-sky: #ffffff;
 
   --page: var(--bg-top);
