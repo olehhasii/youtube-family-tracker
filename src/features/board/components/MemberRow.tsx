@@ -5,7 +5,7 @@ import type { BoardRow } from '../../../data/board'
 import type { Status } from '../../../model/types'
 import { Avatar } from '../../../shared/ui/Avatar'
 import { IconPlus } from '../../../shared/ui/icons'
-import { RADIUS, STATUS_COLOR_TRANSITION, layoutSpring, rowEntrance } from '../../../shared/lib/motion'
+import { RADIUS, REVEAL, STATUS_COLOR_TRANSITION, layoutSpring, rowEntrance } from '../../../shared/lib/motion'
 import type { StandingText } from '../../../shared/lib/describe-standing'
 import { memberLayoutId } from '../helpers/layout-ids'
 import { STATUS_COLOR } from '../../../shared/lib/status-colors'
@@ -16,6 +16,9 @@ type Props = {
   row: BoardRow
   wording: StandingText
   index: number
+  /** Seconds the rows wait for the card on page load. */
+  /** On page load the row follows the card in; afterwards it returns on its own. */
+  pageLoad: boolean
   focusOnMount?: boolean
   onOpen: () => void
   onRecord?: () => void
@@ -30,7 +33,7 @@ const TINT: Record<Status, string> = {
 }
 
 // shares layout ids with DetailCard, so opening it grows the row into the card
-export function MemberRow({ row: { member, standing }, wording, index, focusOnMount = false, onOpen, onRecord }: Props) {
+export function MemberRow({ row: { member, standing }, wording, index, pageLoad, focusOnMount = false, onOpen, onRecord }: Props) {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
   const button = useRef<HTMLButtonElement>(null)
@@ -41,7 +44,7 @@ export function MemberRow({ row: { member, standing }, wording, index, focusOnMo
   return (
     <motion.li
       layoutId={memberLayoutId(member.id, '', reduce)}
-      {...rowEntrance(reduce, index)}
+      {...rowEntrance(reduce, index, pageLoad)}
       className={`flex items-center ${TINT[standing.status]}`}
       // inline so Motion can correct the radius during the layout animation
       style={{ borderRadius: RADIUS.row, '--tint': STATUS_COLOR[standing.status] } as CSSProperties}
@@ -49,7 +52,7 @@ export function MemberRow({ row: { member, standing }, wording, index, focusOnMo
       <button ref={button} className="flex min-w-0 flex-1 items-center gap-3.5 rounded-[inherit] p-3.5 text-left press" onClick={onOpen}>
         <motion.div layoutId={memberLayoutId(member.id, '-avatar', reduce)} transition={layoutSpring} className="relative">
           <Avatar id={member.id} name={member.name} url={member.avatarUrl} size={46} />
-          <AvatarRing status={standing.status} index={index} />
+          <AvatarRing status={standing.status} index={index} after={pageLoad ? REVEAL.rows : 0} />
         </motion.div>
         <div className="min-w-0 flex-1">
           {/* the pill shares the name's line so long Ukrainian pills never squeeze the dates; when both don't fit it wraps below the name instead of crushing it */}

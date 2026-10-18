@@ -41,6 +41,11 @@ export interface GradientASCIIProps extends Omit<HTMLAttributes<HTMLDivElement>,
   scrambleRadius?: number;
   clickEffect?: GradientASCIIClickEffect;
   intro?: boolean;
+  /** The intro waits for this before it starts; turning `intro` off while it waits skips it. */
+  introPlay?: boolean;
+  /** Where the intro reveals from: the shape's own order, or outwards from the centre of the screen. */
+  introFrom?: 'shape' | 'centre';
+  introSeconds?: number;
   lightMode?: boolean;
   fontFamily?: string;
   dpr?: number;
@@ -74,6 +79,9 @@ type Settings = {
   scrambleRadius: number;
   clickEffect: number;
   intro: boolean;
+  introPlay: boolean;
+  introFrom: number;
+  introSeconds: number;
   lightMode: boolean;
   fontFamily: string;
   dpr?: number;
@@ -103,7 +111,6 @@ const MAX_TRAIL = 24;
 const CLICK_LIFE = 1.2;
 const TRAIL_LIFE = 0.7;
 const TRAIL_STEP = 0.015;
-const INTRO_SECONDS = 2.4;
 const ATLAS_CELL_W = 60;
 const ATLAS_CELL_H = 100;
 const ATLAS_COLUMNS = 16;
@@ -147,6 +154,7 @@ uniform float uRadius;
 uniform vec4 uClicks[4];
 uniform int uClickEffect;
 uniform float uIntro;
+uniform int uIntroFrom;
 uniform float uSunY;
 uniform float uFrame;
 in vec2 vUv;
@@ -260,6 +268,7 @@ void main() {
   else if (uShape == 2) shape = rise(q, time, order);
   else shape = eclipse(q, time, order);
 
+  if (uIntroFrom == 1) order = length(p) / length(vec2(uAspect, 1.0) * 0.5);
   float reveal = clamp((uIntro * 1.45 - order) / 0.45, 0.0, 1.0);
   reveal = reveal * reveal * (3.0 - 2.0 * reveal);
 
@@ -281,7 +290,8 @@ void main() {
       scramble = max(scramble, (1.0 - smoothstep(size * 0.6, size, d)) * c.w);
     }
   }
-  vec2 t = clamp(shape.xy * mix(0.7, 1.0, reveal), 0.0, 1.0);
+  // the shape's own intro also draws its colours in; from the centre they stay put, so nothing reads as a zoom
+  vec2 t = clamp(shape.xy * mix(uIntroFrom == 1 ? 1.0 : 0.7, 1.0, reveal), 0.0, 1.0);
   vec4 mixed = mix(tone(t.x), tone(t.y), shape.z);
   vec3 color = encode(labToRgb(mixed.rgb));
   float alpha = mixed.a * reveal;
@@ -547,6 +557,9 @@ const GradientASCII = ({
   scrambleRadius = 0.1,
   clickEffect = 'wave',
   intro = true,
+  introPlay = true,
+  introFrom = 'shape',
+  introSeconds = 2.4,
   lightMode = false,
   fontFamily = DEFAULT_FONT,
   dpr,
@@ -585,6 +598,9 @@ const GradientASCII = ({
     scrambleRadius: clamp(scrambleRadius, 0.02, 0.4),
     clickEffect: CLICK_EFFECTS[clickEffect] ?? 1,
     intro,
+    introPlay,
+    introFrom: introFrom === 'centre' ? 1 : 0,
+    introSeconds: Math.max(0.1, introSeconds),
     lightMode,
     fontFamily: fontFamily || DEFAULT_FONT,
     dpr,
@@ -772,6 +788,7 @@ const GradientASCII = ({
       gl.uniform4fv(fu.uClicks, clickData);
       gl.uniform1i(fu.uClickEffect, s.clickEffect);
       gl.uniform1f(fu.uIntro, introClock);
+      gl.uniform1i(fu.uIntroFrom, s.introFrom);
       gl.uniform1f(fu.uSunY, s.sunHeight);
       gl.uniform1f(fu.uFrame, frameSeed);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
@@ -887,7 +904,8 @@ const GradientASCII = ({
         time += dt * s.speed * 0.5;
         glyphTime += dt * Math.max(s.speed, 0.15);
       }
-      if (introClock < 1) introClock = Math.min(1, introClock + dt / INTRO_SECONDS);
+      if (!s.intro) introClock = 1;
+      else if (introClock < 1 && s.introPlay) introClock = Math.min(1, introClock + dt / s.introSeconds);
       grainClock += dt;
       if (!reduce && grainClock > 1 / 24) {
         grainClock = 0;
@@ -895,7 +913,7 @@ const GradientASCII = ({
       }
       updateInput(dt);
       draw();
-      const busy = !reduce || introClock < 1 || clicks.length > 0 || trail.length > 0;
+      const busy = !reduce || (introClock < 1 && s.introPlay) || clicks.length > 0 || trail.length > 0;
       if (busy) raf = requestAnimationFrame(frame);
       else last = 0;
     };

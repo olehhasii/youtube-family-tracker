@@ -143,7 +143,7 @@ describe('BoardPage', () => {
     expect(stat(stage, 'сплатили')).toBe('ще ніхто')
   })
 
-  test('waits behind the curtain while loading, then shows an error message when the Board cannot load', async () => {
+  test('waits behind the loader while loading, then shows an error message when the Board cannot load', async () => {
     vi.mocked(fetchBoardTables).mockRejectedValue(new Error('offline'))
     renderWithProviders(<BoardPage />)
     expect(screen.queryByRole('main')).not.toBeInTheDocument()

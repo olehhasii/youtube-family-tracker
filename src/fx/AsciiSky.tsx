@@ -1,9 +1,17 @@
+import { SKY_INTRO_S } from '../shared/lib/motion'
 import GradientASCII from './GradientASCII'
 import { usePalette } from './use-palette'
 import { usePortrait } from './use-portrait'
 
+type Props = {
+  onReady: () => void
+  /** Whether it decodes in outwards from the centre (where the loader's glyphs sat), and when that starts. */
+  intro: boolean
+  play: boolean
+}
+
 /** The background: a glow of palette colours drawn as Tektur glyphs, scrambling under a mouse. Lazy-loaded by `Background`. */
-export default function AsciiSky({ onReady }: { onReady: () => void }) {
+export default function AsciiSky({ onReady, intro, play }: Props) {
   const palette = usePalette()
   const portrait = usePortrait()
   return (
@@ -26,7 +34,10 @@ export default function AsciiSky({ onReady }: { onReady: () => void }) {
       gradientOpacity={palette.fill}
       grain={0}
       dpr={1}
-      intro={false}
+      intro={intro}
+      introPlay={play}
+      introFrom="centre"
+      introSeconds={SKY_INTRO_S}
       clickEffect="none"
       mouseInteraction={window.matchMedia('(hover: hover) and (pointer: fine)').matches}
       calmSelector="[data-fx-calm]"

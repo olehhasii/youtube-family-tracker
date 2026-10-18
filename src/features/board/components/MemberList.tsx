@@ -31,9 +31,12 @@ export function MemberList({ rows, today, onRecord, onEdit, onAdd }: Props) {
   const toast = useToast()
   const [openId, setOpenId] = useState<string | null>(null)
   const [returnFocusTo, setReturnFocusTo] = useState<string | null>(null)
+  // rows wait for the card on page load; after a detail card closes they return on their own
+  const [pageLoad, setPageLoad] = useState(true)
   const opened = rows.find((r) => r.member.id === openId)
 
   const open = (id: string) => {
+    setPageLoad(false)
     setReturnFocusTo(null)
     setOpenId(id)
   }
@@ -62,7 +65,8 @@ export function MemberList({ rows, today, onRecord, onEdit, onAdd }: Props) {
   return (
     // the row ↔ card handoff needs both in one LayoutGroup, or the closing card never leaves
     <LayoutGroup>
-      <AnimatePresence mode="popLayout" initial={false}>
+      {/* no initial={false}: it would also stop the rows inside from playing their entrance */}
+      <AnimatePresence mode="popLayout">
         {opened ? (
           <DetailCard
             key="detail"
@@ -83,13 +87,14 @@ export function MemberList({ rows, today, onRecord, onEdit, onAdd }: Props) {
                 row={row}
                 wording={describeStanding(row.standing, lng)}
                 index={i}
+                pageLoad={pageLoad}
                 focusOnMount={row.member.id === returnFocusTo}
                 onOpen={() => open(row.member.id)}
                 onRecord={recordFor(row)}
               />
             ))}
             {admin && (
-              <motion.li {...rowEntrance(reduce, rows.length)} className="rounded-row outline-[1.5px] -outline-offset-[1.5px] outline-fg/20 outline-dashed">
+              <motion.li {...rowEntrance(reduce, rows.length, pageLoad)} className="rounded-row outline-[1.5px] -outline-offset-[1.5px] outline-fg/20 outline-dashed">
                 <button className="flex w-full items-center justify-center gap-2 rounded-[inherit] p-4 font-medium text-muted press" onClick={onAdd}>
                   <IconPlus />
                   {t('admin.addMember')}

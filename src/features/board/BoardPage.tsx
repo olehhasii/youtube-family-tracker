@@ -3,14 +3,14 @@ import { useCallback, useState } from 'react'
 import { useAdmin } from '../../data/hooks/use-auth'
 import { useBoard } from '../../data/hooks/use-board'
 import { Background } from '../../fx/Background'
-import { Curtain } from '../../fx/Curtain'
 import { useReveal } from '../../fx/use-reveal'
-import { RADIUS, cardEntrance, layoutSpring } from '../../shared/lib/motion'
+import { DECODE_HOLD_MS, DECODE_MS, LOADER_MIN_MS, RADIUS, cardEntrance, layoutSpring } from '../../shared/lib/motion'
 import { GroupSheet } from '../admin/GroupSheet'
 import { MemberSheet } from '../admin/MemberSheet'
 import { RecordPaymentSheet } from '../admin/RecordPaymentSheet'
 import { Island } from '../island/Island'
 import { BoardBody } from './components/BoardBody'
+import { Loader } from './components/Loader'
 import { Stage } from './components/Stage'
 
 export function BoardPage() {
@@ -24,12 +24,16 @@ export function BoardPage() {
   const entrance = cardEntrance(reduce)
   const [backgroundReady, setBackgroundReady] = useState(false)
   const onBackgroundReady = useCallback(() => setBackgroundReady(true), [])
-  // the page-load moment plays once, so the page waits behind the curtain for its data and its background
-  const revealed = useReveal(!board.isPending, backgroundReady)
+  // the page-load moment plays once, so the loader holds the page until its data and its background are ready, then
+  // hands over to it; it never just flashes, and its decode counts towards that minimum
+  const ready = useReveal(!board.isPending, backgroundReady, reduce ? LOADER_MIN_MS : LOADER_MIN_MS - DECODE_MS - DECODE_HOLD_MS)
+  const [revealed, setRevealed] = useState(false)
+  const onLoaded = useCallback(() => setRevealed(true), [])
 
   return (
     <div className="relative min-h-dvh lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,40rem)] lg:justify-center lg:gap-[clamp(3rem,6vw,7rem)] lg:px-12">
       <Background revealed={revealed} onReady={onBackgroundReady} />
+      {!revealed && <Loader name={ready ? (board.data?.group?.name ?? null) : undefined} onDone={onLoaded} />}
       {revealed && (
         <>
           <Stage board={board.data} onEditGroup={() => setEditingGroup(true)} />
@@ -47,7 +51,6 @@ export function BoardPage() {
           <Island board={board.data} />
         </>
       )}
-      <Curtain shown={!revealed} />
       {board.data && (
         <>
           {/* each closes if the session ends */}

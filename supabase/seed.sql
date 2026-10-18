@@ -2,7 +2,7 @@
 -- so every Status shows up. Load it into an EMPTY database only (re-running it in a later month would overlap
 -- Payments). Wiped before the real data is imported (ticket 16).
 
-insert into public.groups (name, monthly_price, currency) values ('Family Premium', 299, 'UAH')
+insert into public.groups (name, monthly_price, currency) values ('YouTube Premium', 299, 'UAH')
 on conflict (id) do nothing;
 
 insert into public.members (name, slug, exempt, position) values

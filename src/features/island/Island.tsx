@@ -1,9 +1,9 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Board } from '../../data/board'
 import { useAdmin, useSignOut } from '../../data/hooks/use-auth'
-import { RADIUS, islandContentSwap, islandEntrance, islandSpring } from '../../shared/lib/motion'
+import { ISLAND_PILL, RADIUS, REVEAL, islandContentSwap, islandEntrance, islandSpring } from '../../shared/lib/motion'
 import { useIslandToast, useSettleToast, useToast } from '../../shared/toast/use-toast'
 import { BackButton } from './components/BackButton'
 import { MenuContent } from './components/MenuContent'
@@ -24,7 +24,17 @@ export function Island({ board }: { board: Board | undefined }) {
   const admin = useAdmin()
   const signOut = useSignOut()
   const [{ mode, from }, setView] = useState<{ mode: Mode; from: Mode | null }>({ mode: 'rest', from: null })
-  const go = (next: Mode) => setView({ mode: next, from: mode })
+  const [arrived, setArrived] = useState(false) // after the first move, the rest state comes back without the entrance delay
+  const go = (next: Mode) => {
+    setArrived(true)
+    setView({ mode: next, from: mode })
+  }
+  // on page load the island rises as an empty pill and widens into its rest state
+  const [grown, setGrown] = useState(!!reduce)
+  useEffect(() => {
+    const timer = setTimeout(() => setGrown(true), REVEAL.islandGrow * 1000)
+    return () => clearTimeout(timer)
+  }, [])
   const shown = toast ? 'toast' : mode // a toast covers whatever is open, which comes back after it
   const { root, onEnter, onFocus, onBlur } = useIslandFocus({ viewKey: toast ? `toast-${toast.id}` : mode, shown, hasAction: !!toast?.action })
 
@@ -76,18 +86,19 @@ export function Island({ board }: { board: Board | undefined }) {
           if (e.key === 'Escape' && mode !== 'rest') back() // also under a toast, for what comes back after it
         }}
         className="pointer-events-auto max-w-full overflow-hidden border border-island-fg/5 bg-island p-1.5 text-sm text-island-fg shadow-island outline-none"
-        style={{ borderRadius: RADIUS.island }} // inline so Motion can correct it while the island morphs
+        style={{ borderRadius: RADIUS.island, ...(grown || shown !== 'rest' ? {} : ISLAND_PILL) }} // inline so Motion can correct it while the island morphs
       >
-        <AnimatePresence mode="popLayout" initial={false}>
+        {/* no initial={false}: it would also stop the ring inside the rest state from drawing in */}
+        <AnimatePresence mode="popLayout">
           {toast && (
             <Panel key={`toast-${toast.id}`} name="toast" {...panel} className={`flex items-center gap-3 ${toast.action ? '' : 'pr-4'}`}>
               <ToastContent toast={toast} onAction={runAction} />
             </Panel>
           )}
 
-          {shown === 'rest' && (
+          {shown === 'rest' && grown && (
             <Panel key="rest" name="rest" {...panel} className="flex items-center gap-2">
-              <RestContent board={board} onOpenMenu={() => go('menu')} />
+              <RestContent board={board} intro={!arrived} onOpenMenu={() => go('menu')} />
             </Panel>
           )}
 

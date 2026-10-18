@@ -9,9 +9,11 @@ type Props = {
   size: number
   stroke: number
   label: string
+  /** Seconds before the ring may start drawing, while what holds it arrives. */
+  after?: number
 }
 
-export function StatusRing({ statuses, size, stroke, label }: Props) {
+export function StatusRing({ statuses, size, stroke, label, after = 0 }: Props) {
   const reduce = useReducedMotion()
   const r = (size - stroke) / 2
   const c = 2 * Math.PI * r
@@ -40,7 +42,7 @@ export function StatusRing({ statuses, size, stroke, label }: Props) {
           }}
           initial={reduce ? false : { strokeDashoffset: segment }}
           animate={{ strokeDashoffset: 0 }}
-          transition={ringDraw(i)}
+          transition={ringDraw(i, after)}
         />
       ))}
     </svg>

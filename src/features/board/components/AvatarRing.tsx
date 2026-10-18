@@ -7,7 +7,7 @@ const SIZE = 56
 const STROKE = 3
 
 /** A full ring in the Member's Status colour around a 46px avatar; dashed while there are no Payments. */
-export function AvatarRing({ status, index }: { status: Status; index: number }) {
+export function AvatarRing({ status, index, after }: { status: Status; index: number; after: number }) {
   const reduce = useReducedMotion()
   const r = (SIZE - STROKE) / 2
   const c = 2 * Math.PI * r
@@ -26,7 +26,7 @@ export function AvatarRing({ status, index }: { status: Status; index: number })
           style={{ stroke: STATUS_COLOR[status], transition: STATUS_COLOR_TRANSITION }}
           initial={reduce ? false : { strokeDashoffset: c }}
           animate={{ strokeDashoffset: 0 }}
-          transition={ringDraw(index)}
+          transition={ringDraw(index, after)}
         />
       )}
     </svg>

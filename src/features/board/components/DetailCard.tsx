@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from 'motion/react'
-import { useEffect, useRef } from 'react'
+import { type Ref, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { BoardRow } from '../../../data/board'
 import { isDated } from '../../../model/types'
@@ -20,9 +20,11 @@ type Props = {
   onRecord?: () => void
   onRemoveLatest?: () => void
   onEdit?: () => void
+  /** From AnimatePresence's popLayout: without it the closing card can't be lifted out of the flow, and holds the rows down until it has gone. */
+  ref?: Ref<HTMLElement>
 }
 
-export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose, onRecord, onRemoveLatest, onEdit }: Props) {
+export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose, onRecord, onRemoveLatest, onEdit, ref }: Props) {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
   const close = useRef<HTMLButtonElement>(null)
@@ -31,6 +33,7 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
 
   return (
     <motion.section
+      ref={ref}
       layoutId={memberLayoutId(member.id, '', reduce)}
       initial={reduce ? { opacity: 0 } : undefined}
       animate={reduce ? { opacity: 1 } : undefined}

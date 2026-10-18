@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 export const REVEAL_LIMIT_MS = 2500
 
 /**
- * Whether the page may appear: once the data has settled and the background has drawn its first frame, or once the data
- * has settled after the limit. It never goes back to hidden.
+ * Whether the page may appear: once the data has settled and held for `holdMs`, and the background has drawn its first
+ * frame (or the limit has passed). It never goes back to hidden.
  */
-export function useReveal(dataSettled: boolean, backgroundReady: boolean) {
+export function useReveal(dataSettled: boolean, backgroundReady: boolean, holdMs: number) {
   const [late, setLate] = useState(false)
+  const [held, setHeld] = useState(false)
   const [revealed, setRevealed] = useState(false)
 
   useEffect(() => {
@@ -16,6 +17,12 @@ export function useReveal(dataSettled: boolean, backgroundReady: boolean) {
     return () => clearTimeout(timer)
   }, [])
 
-  if (!revealed && dataSettled && (backgroundReady || late)) setRevealed(true)
+  useEffect(() => {
+    if (!dataSettled) return
+    const timer = setTimeout(() => setHeld(true), holdMs)
+    return () => clearTimeout(timer)
+  }, [dataSettled, holdMs])
+
+  if (!revealed && dataSettled && held && (backgroundReady || late)) setRevealed(true)
   return revealed
 }
