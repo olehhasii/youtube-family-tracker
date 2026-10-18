@@ -77,6 +77,21 @@ describe('Island', () => {
     expect(screen.getByText('12:06')).toBeInTheDocument()
   })
 
+  test('the theme button switches between dark (the default) and light, and remembers the choice', async () => {
+    const user = userEvent.setup()
+    renderIsland(board)
+    const root = document.documentElement
+    expect(root.dataset.theme).toBeUndefined()
+
+    await user.click(screen.getByRole('button', { name: 'Увімкнути світлу тему' }))
+    expect(root.dataset.theme).toBe('light')
+    expect(localStorage.getItem('theme')).toBe('light')
+
+    await user.click(screen.getByRole('button', { name: 'Увімкнути темну тему' }))
+    expect(root.dataset.theme).toBeUndefined()
+    expect(localStorage.getItem('theme')).toBe('dark')
+  })
+
   test('••• opens the menu and Back returns, keeping focus in the island', async () => {
     const user = userEvent.setup()
     renderIsland(board)

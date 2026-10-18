@@ -49,6 +49,8 @@
     "back": "Back",
     "about": "About",
     "switchLanguage": "{{current}} · switch language to Ukrainian",
+    "switchToLight": "Switch to light theme",
+    "switchToDark": "Switch to dark theme",
     "aboutText": "Shows which friends sharing a YouTube Premium Family plan have paid, and for which months. Only the Admin records payments.",
     "github": "GitHub (opens in a new tab)",
     "signInAsAdmin": "Sign in as Admin",

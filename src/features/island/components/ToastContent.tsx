@@ -4,7 +4,7 @@ import { IconCheck, IconCross } from '../../../shared/ui/icons'
 export function ToastContent({ toast, onAction }: { toast: Toast; onAction: () => void }) {
   return (
     <>
-      <span className={`grid size-10 shrink-0 place-items-center rounded-full text-white ${toast.tone === 'error' ? 'bg-overdue' : 'bg-paid'}`}>
+      <span className={`grid size-10 shrink-0 place-items-center rounded-full text-on-status ${toast.tone === 'error' ? 'bg-overdue' : 'bg-paid'}`}>
         {toast.tone === 'error' ? <IconCross /> : <IconCheck />}
       </span>
       {/* the island's live region announces it */}

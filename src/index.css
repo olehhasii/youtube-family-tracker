@@ -2,14 +2,46 @@
 @import '@fontsource-variable/tektur';
 @import '@fontsource-variable/golos-text';
 
-/* The Sky look (spec "Look"). Light is the only theme for now; the dark Sky (ticket 12) adds its own block and becomes the default. */
+/* The Sky look (spec "Look"). Dark is the default (bare :root); light is chosen from the island and saved per device. */
 :root {
   /* the background palette: the ASCII sky (src/fx) and its CSS fallback below both paint with these */
+  --bg-top: #15193f;
+  --bg-middle: #4a3283;
+  --bg-bottom: #c76d8a;
+  --bg-glow: #ffc58f;
+  --on-sky: #ffffff;
+
+  --page: var(--bg-top);
+  --card: #1f1c19;
+  --raised: #2a2622;
+  --accent: #3b352e;
+  --fg: #f3ead8;
+  --muted: #a69d8d;
+  --primary: #e0574a;
+  --primary-fg: #fffaf0;
+  --border: rgb(243 234 216 / 0.08);
+  --island: #26221e;
+  --island-fg: #f3ead8;
+  --shade: rgb(6 4 24);
+  --card-edge: rgb(255 255 255 / 0.06);
+
+  /* brighter than in light so tints and text read on the ink card; pills put ink text on them */
+  --paid: #67b553;
+  --due-soon: #e0a42e;
+  --overdue: #ec6a5d;
+  --unknown: #948d80;
+  --exempt: #4fa3dc;
+  --on-status: #1f1c19;
+
+  --grain: 0.22;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
   --bg-top: #1a84c4;
   --bg-middle: #3a9ed8;
   --bg-bottom: #74c0e6;
   --bg-glow: #fff1d6;
-  --on-sky: #ffffff;
 
   --page: var(--bg-middle);
   --card: #fbf5e8;
@@ -23,14 +55,15 @@
   --island: #fffaf0;
   --island-fg: #2b2a27;
   --shade: rgb(10 60 100);
+  --card-edge: rgb(255 255 255 / 0.7);
 
   --paid: #4c9a3d;
   --due-soon: #c68a10;
   --overdue: #d4483b;
   --unknown: #a29d92;
   --exempt: #2a7fb8;
+  --on-status: #ffffff;
 
-  --grain: 0.22;
   color-scheme: light;
 }
 
@@ -53,8 +86,9 @@
   --color-overdue: var(--overdue);
   --color-unknown: var(--unknown);
   --color-exempt: var(--exempt);
+  --color-on-status: var(--on-status);
 
-  --shadow-card: 0 2px 0 rgb(255 255 255 / 0.7) inset, 0 34px 60px -26px rgb(from var(--shade) r g b / 0.6);
+  --shadow-card: 0 2px 0 var(--card-edge) inset, 0 34px 60px -26px rgb(from var(--shade) r g b / 0.6);
   --shadow-island: 0 18px 40px -14px rgb(from var(--shade) r g b / 0.7);
 }
 
@@ -182,4 +216,11 @@ button {
 :focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
+}
+
+/* Theme change from CLAUDE.md "Motion": the whole page cross-fades (View Transitions); reduced motion skips the transition in JS */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 300ms;
+  animation-timing-function: var(--ease-out);
 }

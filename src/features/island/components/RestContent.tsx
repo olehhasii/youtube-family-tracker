@@ -4,6 +4,7 @@ import { IconDots } from '../../../shared/ui/icons'
 import { StatusRing } from '../../../shared/ui/StatusRing'
 import { Clock } from './Clock'
 import { LanguageButton } from './LanguageButton'
+import { ThemeButton } from './ThemeButton'
 
 type Props = {
   /** undefined while the Board loads or failed: then the ring is left out. */
@@ -29,6 +30,7 @@ export function RestContent({ board, onOpenMenu }: Props) {
         <Clock />
       </div>
       <LanguageButton />
+      <ThemeButton />
       <button
         data-autofocus
         className="grid size-10 shrink-0 place-items-center rounded-full bg-primary text-primary-fg press-round"
