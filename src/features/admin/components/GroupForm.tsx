@@ -2,6 +2,7 @@ import { Drawer } from '@base-ui/react/drawer'
 import { type FormEvent, type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { Board } from '../../../data/board'
+import { validationMessage } from '../../../shared/lib/validation'
 
 const CURRENCIES = ['UAH', 'USD', 'EUR']
 
@@ -14,7 +15,7 @@ export function GroupForm({ group, onSubmit }: { group: Board['group']; onSubmit
     <Drawer.Content render={<form onSubmit={onSubmit} />} className="flex flex-col gap-5">
       <Drawer.Title className="font-display text-lg font-bold tracking-[-0.02em]">{t('group.title')}</Drawer.Title>
       <Field label={t('group.name')}>
-        <input name="name" defaultValue={group?.name} required pattern=".*\S.*" maxLength={60} autoComplete="off" className={INPUT} />
+        <input name="name" defaultValue={group?.name} required pattern=".*\S.*" maxLength={60} autoComplete="off" {...validationMessage(t('validation.groupName'))} className={INPUT} />
       </Field>
       <div className="flex gap-3">
         <Field label={t('group.price')}>
@@ -25,6 +26,7 @@ export function GroupForm({ group, onSubmit }: { group: Board['group']; onSubmit
             inputMode="decimal"
             pattern="\d+([.,]\d{1,2})?"
             autoComplete="off"
+            {...validationMessage(t('validation.price'))}
             className={INPUT}
           />
         </Field>

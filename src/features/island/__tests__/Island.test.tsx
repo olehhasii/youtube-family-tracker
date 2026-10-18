@@ -77,6 +77,18 @@ describe('Island', () => {
     expect(screen.getByText('12:06')).toBeInTheDocument()
   })
 
+  test('UA/EN switches the language, the page title and <html lang>, and remembers the choice', async () => {
+    const user = userEvent.setup()
+    renderIsland(board)
+    expect(document.title).toBe('YouTube Family · хто заплатив')
+
+    await user.click(screen.getByRole('button', { name: /^UA/ }))
+    expect(screen.getByRole('button', { name: /^EN/ })).toBeInTheDocument()
+    expect(document.documentElement.lang).toBe('en')
+    expect(document.title).toBe("YouTube Family · who's paid")
+    expect(localStorage.getItem('language')).toBe('en')
+  })
+
   test('the theme button switches between dark (the default) and light, and remembers the choice', async () => {
     const user = userEvent.setup()
     renderIsland(board)

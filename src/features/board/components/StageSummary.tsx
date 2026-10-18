@@ -13,8 +13,9 @@ export function StageSummary({ board: { rows, summary }, group, onEdit }: Props)
   const lng = toLanguage(i18n.resolvedLanguage)
   const reduce = useReducedMotion()
   const title = useId()
+  // the narrow symbol (₴, $, €) instead of the Latin code, placed the way each language writes it: "299 ₴", "₴299"
   const money = (amount: number, digits: number) =>
-    `${new Intl.NumberFormat(LOCALE[lng], { maximumFractionDigits: digits }).format(amount)} ${group.currency}`
+    new Intl.NumberFormat(LOCALE[lng], { style: 'currency', currency: group.currency, currencyDisplay: 'narrowSymbol', minimumFractionDigits: 0, maximumFractionDigits: digits }).format(amount)
 
   return (
     <motion.section data-fx-calm aria-labelledby={title} {...cardEntrance(reduce)} className="relative text-on-sky [text-shadow:0_2px_24px_rgb(10_60_100/0.3)]">

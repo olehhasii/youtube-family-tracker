@@ -1,6 +1,7 @@
 import { type FormEvent, type ReactNode, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSignIn } from '../../../data/hooks/use-auth'
+import { validationMessage } from '../../../shared/lib/validation'
 
 type Props = {
   onSignedIn: () => void
@@ -31,10 +32,10 @@ export function SignInForm({ onSignedIn, back }: Props) {
   return (
     <form className="flex flex-col gap-2" onSubmit={(e) => void submit(e)}>
       <Field label={t('island.email')}>
-        <input data-autofocus name="email" type="email" autoComplete="username" required className={INPUT} />
+        <input data-autofocus name="email" type="email" autoComplete="username" required {...validationMessage(t('validation.email'))} className={INPUT} />
       </Field>
       <Field label={t('island.password')}>
-        <input name="password" type="password" autoComplete="current-password" required className={INPUT} />
+        <input name="password" type="password" autoComplete="current-password" required {...validationMessage(t('validation.password'))} className={INPUT} />
       </Field>
       {error && (
         <p role="alert" className="px-1 text-overdue">

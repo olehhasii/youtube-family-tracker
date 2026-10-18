@@ -7,6 +7,7 @@ import { standing } from '../../../model/standing'
 import { type Day, isDated } from '../../../model/types'
 import { describePaymentMonths } from '../../../shared/lib/describe-payment'
 import { toLanguage } from '../../../shared/lib/locale'
+import { validationMessage } from '../../../shared/lib/validation'
 import { ConfirmButton } from './ConfirmButton'
 import { PhotoField } from './PhotoField'
 
@@ -60,6 +61,7 @@ export function MemberForm({ row, today, onSave, onDelete }: Props) {
           pattern=".*\S.*" // the database refuses a name of only spaces
           maxLength={40}
           autoComplete="off"
+          {...validationMessage(t('validation.name'))}
           className="h-12 rounded-xl bg-fg/5 px-3.5 text-fg outline-none focus-visible:outline-2 focus-visible:outline-fg"
         />
       </label>

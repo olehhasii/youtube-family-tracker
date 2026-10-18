@@ -1,4 +1,7 @@
 {
+  "app": {
+    "title": "YouTube Family · who's paid"
+  },
   "board": {
     "empty": "No one here yet.",
     "loading": "Loading…",
@@ -123,5 +126,12 @@
     "save": "Save",
     "saved": "Group saved",
     "saveFailed": "Couldn't save the group"
+  },
+  "validation": {
+    "name": "Enter a name.",
+    "groupName": "Enter the group’s name.",
+    "price": "Enter the price as a number, like 299 or 299.50.",
+    "email": "Enter an email, like name@example.com.",
+    "password": "Enter the password."
   }
 }
