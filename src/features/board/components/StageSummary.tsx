@@ -14,7 +14,7 @@ export function StageSummary({ board: { rows, summary }, group }: { board: Board
     `${new Intl.NumberFormat(LOCALE[lng], { maximumFractionDigits: digits }).format(amount)} ${group.currency}`
 
   return (
-    <motion.section aria-labelledby={title} {...cardEntrance(reduce)} className="relative text-on-sky [text-shadow:0_2px_24px_rgb(10_60_100/0.3)]">
+    <motion.section data-fx-calm aria-labelledby={title} {...cardEntrance(reduce)} className="relative text-on-sky [text-shadow:0_2px_24px_rgb(10_60_100/0.3)]">
       <p className="text-[12.5px] font-medium opacity-80">{t('stage.members', { count: rows.length })}</p>
       <h1 id={title} className="mt-1 font-display text-[clamp(26px,7.5vw,34px)] leading-tight font-bold tracking-[-0.03em] lg:text-[clamp(34px,3.6vw,56px)]">
         {group.name}

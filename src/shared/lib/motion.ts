@@ -76,6 +76,9 @@ export const viewExit: Transition = { duration: 0.15, ease: EASE_OUT }
 /** Content inside a card that has just grown, fading in once the card has mostly settled. */
 export const settledContentFade: Transition = { delay: 0.15, duration: 0.25, ease: EASE_OUT }
 
+/** The background effect fading in over its CSS fallback when it missed the page reveal. Opacity only, so it needs no reduced variant. */
+export const backgroundLateFade: Transition = { duration: 0.6, ease: EASE_OUT }
+
 /** CSS transition for a colour that follows a Status change. */
 export const STATUS_COLOR_TRANSITION = 'stroke 250ms ease, color 250ms ease'
 

@@ -30,6 +30,7 @@ Values chosen in the Board prototype (branch `prototype/board-variants`, variant
 - **Page load (the one orchestrated moment):** card from 24px below + blur 8px, 500ms ease-out; rows follow from 12px + blur 6px, 450ms, starting at 150ms with a 50ms stagger; the status ring draws over 800ms from 300ms.
 - **View swaps** (list ↔ detail card): the leaving view fades out in 150ms ease-out; content inside a freshly grown card fades in over 250ms after 150ms.
 - **Status colour changes** (ring segments, relative-date text): 250ms `ease`.
+- **Background arriving late** (it missed the page reveal's 2.5s limit): it cross-fades in over the CSS fallback, 600ms ease-out.
 - Every value above has a named preset in `src/shared/lib/motion.ts`; use those, not literals.
 - **Toasts** live in the island for 2.6s.
 - Pair every animation with its `prefers-reduced-motion` variant (opacity only) and gate hover motion behind `(hover: hover) and (pointer: fine)`.

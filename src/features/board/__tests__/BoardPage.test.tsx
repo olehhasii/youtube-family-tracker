@@ -124,10 +124,10 @@ describe('BoardPage', () => {
     expect(stat(stage, 'сплатили')).toBe('ще ніхто')
   })
 
-  test('shows a loading message, then an error message when the Board cannot load', async () => {
+  test('waits behind the curtain while loading, then shows an error message when the Board cannot load', async () => {
     vi.mocked(fetchBoardTables).mockRejectedValue(new Error('offline'))
     renderWithProviders(<BoardPage />)
-    expect(screen.getByText('Завантаження…')).toBeInTheDocument()
+    expect(screen.queryByRole('main')).not.toBeInTheDocument()
     expect(await screen.findByText('Не вдалося завантажити дані. Спробуйте ще раз.')).toBeInTheDocument()
   })
 
