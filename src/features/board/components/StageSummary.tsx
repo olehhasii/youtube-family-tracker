@@ -30,7 +30,7 @@ export function StageSummary({ board: { rows, summary }, group, onEdit }: Props)
           </button>
         )}
       </div>
-      <dl className="mt-4 flex gap-3.5 lg:mt-12 lg:flex-col lg:gap-4">
+      <dl className="mt-3 flex gap-3.5 lg:mt-6 lg:flex-col lg:gap-4">
         <Stat label={t('stage.paidUp')} big={summary.paying > 0}>
           {summary.paying ? (
             <>
