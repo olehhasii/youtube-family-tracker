@@ -74,6 +74,6 @@ describe('toBoard', () => {
       '2026-10-27', // Max and Dima are Due Soon, which still counts as paid up
     )
     expect(board.group).toEqual({ name: 'Family Premium', monthlyPrice: 299, currency: 'UAH' })
-    expect(board.summary).toEqual({ paidUp: 3, paying: 5, pricePerPerson: 59.8 })
+    expect(board.summary).toEqual({ paidUp: 3, paying: 5, pricePerPerson: 299 / 6 }) // Oleh is Exempt but still holds a share
   })
 })

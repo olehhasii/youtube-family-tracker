@@ -97,7 +97,7 @@ describe('BoardPage', () => {
     expect(within(stage).getByText('3 учасники')).toBeInTheDocument()
     expect(stat(stage, 'сплатили')).toBe('1/2')
     expect(within(stage).queryByText('Заборгованість')).not.toBeInTheDocument()
-    expect(stat(stage, 'на місяць')?.replace(/\s/g, ' ')).toBe('299 ₴ · ≈150 ₴') // uk puts a no-break space before ₴
+    expect(stat(stage, 'на місяць')?.replace(/\s/g, ' ')).toBe('299 ₴ · ≈100 ₴') // three Members, Exempt Oleh included; uk puts a no-break space before ₴
   })
 
   test("tapping a Member opens their details and history; Close goes back", async () => {
