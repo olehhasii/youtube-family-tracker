@@ -5,14 +5,18 @@
 /* The Sky look (spec "Look"). Dark is the default (bare :root); light is chosen from the island and saved per device. */
 :root {
   /* the background palette: the ASCII sky (src/fx) and its CSS fallback below both paint with these */
-  --bg-top: #070204;
-  --bg-middle: #4a0b1c;
-  --bg-bottom: #7a1229;
-  --bg-glow: #d01f3f;
-  /* the ASCII glow blends through these, darkest first: a long dark run keeps red to the edges, and a floor above
+  --bg-top: #040102;
+  --bg-middle: #0e0306;
+  --bg-bottom: #16050a;
+  --bg-glow: #5a1222;
+  /* the ASCII glow blends through these, darkest first: a long dark run keeps the red to the edges, and a floor above
      black keeps the middle of the sky drawing glyphs */
-  --bg-ramp: #2a0712 #340a18 #400c1d var(--bg-middle) var(--bg-bottom) var(--bg-glow);
-  --bg-glyph-gain: 4;
+  --bg-ramp: #1a050b #20060d #270810 #300a14 #3f0d1a var(--bg-glow);
+  /* the sky under the glyphs is kept faint (fill) while the glyphs are drawn brighter than it (light), so a dark sky
+     still shows its ASCII; gain lifts the luma the glyphs are picked from, which dark reds barely have */
+  --bg-fill: 0.45;
+  --bg-glyph-gain: 7;
+  --bg-glyph-light: 2.2;
   --on-sky: #ffffff;
 
   --page: var(--bg-top);
@@ -47,7 +51,9 @@
   --bg-bottom: #74c0e6;
   --bg-glow: #fff1d6;
   --bg-ramp: var(--bg-top) var(--bg-middle) var(--bg-bottom) var(--bg-glow);
+  --bg-fill: 1;
   --bg-glyph-gain: 1;
+  --bg-glyph-light: 0.55;
 
   --page: var(--bg-middle);
   --card: #fbf5e8;

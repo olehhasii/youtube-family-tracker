@@ -48,6 +48,7 @@ export interface GradientASCIIProps extends Omit<HTMLAttributes<HTMLDivElement>,
   calmSelector?: string;
   calmStrength?: number;
   glyphGain?: number;
+  glyphLight?: number;
   onReady?: () => void;
 }
 
@@ -78,6 +79,7 @@ type Settings = {
   calmSelector?: string;
   calmStrength: number;
   glyphGain: number;
+  glyphLight: number;
 };
 
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
@@ -302,6 +304,7 @@ uniform float uGlyphTime;
 uniform float uSeedValue;
 uniform float uLight;
 uniform float uGain;
+uniform float uGlyphLight;
 uniform vec4 uCalm;
 uniform float uCalmStrength;
 uniform float uRatio;
@@ -346,7 +349,7 @@ vec4 glyphAt(vec2 px) {
   calm *= calm;
   float alpha = uOpacity * present * cutoff * coverage * mix(1.0, 0.35 + 0.65 * level, 0.55) * (1.0 - focus * 0.5) * (1.0 - uCalmStrength * calm);
   if (uLight < 0.5) {
-    vec3 light = field.rgb * 0.55 + vec3(0.03) * field.a;
+    vec3 light = field.rgb * uGlyphLight + vec3(0.03) * field.a;
     return vec4(light * alpha, 0.6 * field.a * alpha);
   }
   vec3 ink = visible * 0.8;
@@ -547,6 +550,7 @@ const GradientASCII = ({
   calmSelector,
   calmStrength = 0,
   glyphGain = 1,
+  glyphLight = 0.55,
   onReady,
   className = '',
   style,
@@ -582,7 +586,8 @@ const GradientASCII = ({
     dpr,
     calmSelector,
     calmStrength,
-    glyphGain
+    glyphGain,
+    glyphLight
   };
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -715,6 +720,7 @@ const GradientASCII = ({
       gl.uniform4fv(u.uCalm, calmBox);
       gl.uniform1f(u.uCalmStrength, s.calmStrength);
       gl.uniform1f(u.uGain, s.glyphGain);
+      gl.uniform1f(u.uGlyphLight, s.glyphLight);
       gl.uniform1f(u.uRatio, view.ratio);
     };
 

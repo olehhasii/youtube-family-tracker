@@ -2,7 +2,7 @@ export type Theme = 'dark' | 'light'
 
 // index.html reads the same key before first paint, so a saved light theme never flashes dark
 export const THEME_KEY = 'theme'
-const THEME_COLOR: Record<Theme, string> = { dark: '#070204', light: '#1a84c4' }
+const THEME_COLOR: Record<Theme, string> = { dark: '#040102', light: '#1a84c4' }
 
 export function currentTheme(): Theme {
   return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
