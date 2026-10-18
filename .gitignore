@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local planning docs (kept on disk, not in the repo)
+/docs/
+/.scratch/
+/GLOSSARY.md
