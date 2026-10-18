@@ -11,7 +11,6 @@ import { MemberSheet } from '../admin/MemberSheet'
 import { RecordPaymentSheet } from '../admin/RecordPaymentSheet'
 import { Island } from '../island/Island'
 import { BoardBody } from './components/BoardBody'
-import { ScreenEdges } from './components/ScreenEdges'
 import { Stage } from './components/Stage'
 
 export function BoardPage() {
@@ -31,7 +30,6 @@ export function BoardPage() {
   return (
     <div className="relative min-h-dvh lg:grid lg:grid-cols-[minmax(0,30rem)_minmax(0,40rem)] lg:justify-center lg:gap-[clamp(3rem,6vw,7rem)] lg:px-12">
       <Background revealed={revealed} onReady={onBackgroundReady} />
-      <ScreenEdges />
       {revealed && (
         <>
           <Stage board={board.data} onEditGroup={() => setEditingGroup(true)} />

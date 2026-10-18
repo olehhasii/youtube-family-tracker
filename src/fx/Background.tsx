@@ -26,12 +26,11 @@ export function Background({ revealed, onReady }: { revealed: boolean; onReady: 
   }, [webgl, onReady])
 
   return (
-    <>
-      <div aria-hidden className="pointer-events-none screen-overhang sky-fallback" />
+    <div aria-hidden className="pointer-events-none sky-layer">
+      <div className="absolute inset-0 sky-fallback edge-fade" />
       {webgl && (
         <motion.div
-          aria-hidden
-          className="pointer-events-none screen-overhang"
+          className="absolute inset-0 edge-fade"
           initial={{ opacity: 0 }}
           animate={{ opacity: drawn ? 1 : 0 }}
           transition={revealed ? backgroundLateFade : { duration: 0 }}
@@ -46,6 +45,6 @@ export function Background({ revealed, onReady }: { revealed: boolean; onReady: 
           </Suspense>
         </motion.div>
       )}
-    </>
+    </div>
   )
 }

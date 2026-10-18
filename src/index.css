@@ -178,7 +178,6 @@
 
 /* Mobile baseline (see the mobile-native skill) */
 html {
-  /* what iOS Safari tints its bars with and shows on overscroll; ScreenEdges fades the sky into it */
   background-color: var(--edge);
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
@@ -188,17 +187,27 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
+  background-color: var(--edge); /* never transparent: iOS Safari falls back to it when tinting its bars */
   color: var(--fg);
 }
 
-/* A fixed layer that covers the screen with room to spare: mobile Safari resizes the viewport as its toolbar comes
-   and goes, and a layer that only matched the viewport left strips of whatever was behind it */
-@utility screen-overhang {
+/*
+ * iOS Safari (26) never paints fixed layers under its status bar and floating toolbar: it clips them to the space
+ * between, and fills each bar with one solid colour read from the background-color of a fixed, full-width layer at that
+ * edge. So the sky is one fixed layer whose own colour is --edge (what the bars get), with its painted content inside
+ * (absolute children, which Safari doesn't sample), and on phones that content fades into --edge at the top and bottom,
+ * so no line shows where Safari cuts it off.
+ */
+@utility sky-layer {
   position: fixed;
-  left: 0;
-  right: 0;
-  top: -80px;
-  height: calc(100lvh + 160px);
+  inset: 0;
+  background-color: var(--edge);
+}
+
+@utility edge-fade {
+  @media (width < 64rem) {
+    mask-image: linear-gradient(transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  }
 }
 
 /* The fallback for the ASCII sky: its `horizon` glow without glyphs (a light top, a dark arch, the plain sky under it) */
@@ -220,15 +229,17 @@ body {
 body::after {
   content: '';
   position: fixed;
-  left: 0;
-  right: 0;
-  top: -80px;
-  height: calc(100lvh + 160px); /* as screen-overhang */
+  inset: 0;
   z-index: 110;
   pointer-events: none;
   opacity: var(--grain);
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/><feComponentTransfer><feFuncA type='table' tableValues='1 1'/></feComponentTransfer></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+
+  /* fades out with the sky at the edges on phones (see sky-layer) */
+  @media (width < 64rem) {
+    mask-image: linear-gradient(transparent, #000 3rem, #000 calc(100% - 3rem), transparent);
+  }
 }
 
 input,
