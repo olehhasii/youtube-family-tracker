@@ -732,8 +732,15 @@ const GradientASCII = ({
     const track = () => {
       const s = settingsRef.current;
       const k = s.calmSelector ? document.querySelector(s.calmSelector)?.getBoundingClientRect() : null;
-      // glyphs are placed in canvas pixels with y up
-      if (k) calmBox.set([k.left * view.ratio, (view.height - k.bottom) * view.ratio, k.right * view.ratio, (view.height - k.top) * view.ratio]);
+      // glyphs are placed in canvas pixels with y up, from the container's corner (it may start above the screen)
+      const box = container.getBoundingClientRect();
+      if (k)
+        calmBox.set([
+          (k.left - box.left) * view.ratio,
+          (view.height - (k.bottom - box.top)) * view.ratio,
+          (k.right - box.left) * view.ratio,
+          (view.height - (k.top - box.top)) * view.ratio
+        ]);
       else calmBox.fill(-1e4);
     };
 

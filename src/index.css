@@ -188,21 +188,31 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  /* the fallback for the ASCII sky: its `horizon` glow without glyphs (a light top, a dark arch, the plain sky under it) */
+  color: var(--fg);
+}
+
+/* A fixed layer that covers the screen with room to spare: mobile Safari resizes the viewport as its toolbar comes
+   and goes, and a layer that only matched the viewport left strips of whatever was behind it */
+@utility screen-overhang {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: -80px;
+  height: calc(100lvh + 160px);
+}
+
+/* The fallback for the ASCII sky: its `horizon` glow without glyphs (a light top, a dark arch, the plain sky under it) */
+@utility sky-fallback {
   background:
     radial-gradient(ellipse 90% 55% at 50% 115%, var(--bg-middle) 60%, var(--bg-top) 90%, transparent 100%),
     radial-gradient(ellipse 60% 40% at 50% -5%, color-mix(in srgb, var(--bg-glow) 45%, var(--bg-middle)), transparent 100%),
     linear-gradient(180deg, color-mix(in srgb, var(--bg-glow) 65%, var(--bg-bottom)) 0%, color-mix(in srgb, var(--bg-glow) 40%, var(--bg-bottom)) 32%, var(--bg-bottom) 48%, var(--bg-top) 68%);
-  background-attachment: fixed;
-  background-color: var(--page);
-  color: var(--fg);
 
   /* on a tall screen the glow stays off the top, where the stage's white text sits (as in the ASCII sky) */
   @media (orientation: portrait) {
     background:
       radial-gradient(ellipse 90% 55% at 50% 115%, var(--bg-middle) 60%, var(--bg-top) 90%, transparent 100%),
       linear-gradient(180deg, var(--bg-top) 0%, var(--bg-middle) 40%, var(--bg-top) 68%);
-    background-attachment: fixed;
   }
 }
 
@@ -210,7 +220,10 @@ body {
 body::after {
   content: '';
   position: fixed;
-  inset: 0;
+  left: 0;
+  right: 0;
+  top: -80px;
+  height: calc(100lvh + 160px); /* as screen-overhang */
   z-index: 110;
   pointer-events: none;
   opacity: var(--grain);

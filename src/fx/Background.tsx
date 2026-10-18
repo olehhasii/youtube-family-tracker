@@ -14,9 +14,9 @@ const supportsWebGl2 = () => {
 }
 
 /**
- * The full-screen effect behind the page. Calls `onReady` once its first frame is drawn (straight away without WebGL2,
- * where the CSS fallback in `index.css` is the background). Until the page is revealed it appears at once; after that
- * it is late, so it fades in over the fallback.
+ * The full-screen sky behind the page: its CSS fallback, and the ASCII effect over it where WebGL2 exists. Calls
+ * `onReady` once the effect's first frame is drawn (straight away without WebGL2). Until the page is revealed the
+ * effect appears at once; after that it is late, so it fades in over the fallback.
  */
 export function Background({ revealed, onReady }: { revealed: boolean; onReady: () => void }) {
   const [webgl] = useState(supportsWebGl2)
@@ -25,23 +25,27 @@ export function Background({ revealed, onReady }: { revealed: boolean; onReady: 
     if (!webgl) onReady()
   }, [webgl, onReady])
 
-  if (!webgl) return null
   return (
-    <motion.div
-      aria-hidden
-      className="pointer-events-none fixed inset-x-0 top-0 h-lvh" // the large viewport, so it reaches under the toolbars of mobile Safari
-      initial={{ opacity: 0 }}
-      animate={{ opacity: drawn ? 1 : 0 }}
-      transition={revealed ? backgroundLateFade : { duration: 0 }}
-    >
-      <Suspense fallback={null}>
-        <AsciiSky
-          onReady={() => {
-            setDrawn(true)
-            onReady()
-          }}
-        />
-      </Suspense>
-    </motion.div>
+    <>
+      <div aria-hidden className="pointer-events-none screen-overhang sky-fallback" />
+      {webgl && (
+        <motion.div
+          aria-hidden
+          className="pointer-events-none screen-overhang"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: drawn ? 1 : 0 }}
+          transition={revealed ? backgroundLateFade : { duration: 0 }}
+        >
+          <Suspense fallback={null}>
+            <AsciiSky
+              onReady={() => {
+                setDrawn(true)
+                onReady()
+              }}
+            />
+          </Suspense>
+        </motion.div>
+      )}
+    </>
   )
 }
