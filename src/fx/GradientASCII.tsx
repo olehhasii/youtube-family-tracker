@@ -47,6 +47,7 @@ export interface GradientASCIIProps extends Omit<HTMLAttributes<HTMLDivElement>,
   style?: CSSProperties;
   calmSelector?: string;
   calmStrength?: number;
+  glyphGain?: number;
   onReady?: () => void;
 }
 
@@ -76,6 +77,7 @@ type Settings = {
   dpr?: number;
   calmSelector?: string;
   calmStrength: number;
+  glyphGain: number;
 };
 
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
@@ -299,6 +301,7 @@ uniform float uDepth;
 uniform float uGlyphTime;
 uniform float uSeedValue;
 uniform float uLight;
+uniform float uGain;
 uniform vec4 uCalm;
 uniform float uCalmStrength;
 uniform float uRatio;
@@ -321,7 +324,8 @@ vec4 glyphAt(vec2 px) {
   vec4 aux = texture(uAux, uv);
   vec3 visible = uLight > 0.5 ? field.rgb + (1.0 - field.a) : field.rgb;
   float luma = dot(visible, vec3(0.2126, 0.7152, 0.0722));
-  float value = uLight > 0.5 ? clamp((1.0 - luma) * 1.5, 0.0, 1.0) : luma;
+  // the glyph and its density follow luma, which deep reds and blues barely have; the gain lifts dark palettes
+  float value = uLight > 0.5 ? clamp((1.0 - luma) * 1.5, 0.0, 1.0) : clamp(luma * uGain, 0.0, 1.0);
   float pick = hash12(cell + uSeedValue * 7.31);
   float level = hash12(cell * 1.73 + 4.1 + uSeedValue);
   float tick = floor(uGlyphTime * 9.0 + level * 9.0);
@@ -542,6 +546,7 @@ const GradientASCII = ({
   dpr,
   calmSelector,
   calmStrength = 0,
+  glyphGain = 1,
   onReady,
   className = '',
   style,
@@ -576,7 +581,8 @@ const GradientASCII = ({
     fontFamily: fontFamily || DEFAULT_FONT,
     dpr,
     calmSelector,
-    calmStrength
+    calmStrength,
+    glyphGain
   };
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -708,6 +714,7 @@ const GradientASCII = ({
       gl.uniform1f(u.uLight, s.lightMode ? 1 : 0);
       gl.uniform4fv(u.uCalm, calmBox);
       gl.uniform1f(u.uCalmStrength, s.calmStrength);
+      gl.uniform1f(u.uGain, s.glyphGain);
       gl.uniform1f(u.uRatio, view.ratio);
     };
 

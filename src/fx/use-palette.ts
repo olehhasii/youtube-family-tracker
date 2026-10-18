@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 
-const TOKENS = ['--bg-top', '--bg-middle', '--bg-bottom', '--bg-glow'] as const
-export type Palette = Record<(typeof TOKENS)[number], string>
+export type Palette = { ramp: string[]; glyphGain: number }
 
 const read = (): Palette => {
   const style = getComputedStyle(document.documentElement)
-  return Object.fromEntries(TOKENS.map((t) => [t, style.getPropertyValue(t).trim()])) as Palette
+  return {
+    ramp: style.getPropertyValue('--bg-ramp').trim().split(/\s+/),
+    glyphGain: Number(style.getPropertyValue('--bg-glyph-gain')) || 1,
+  }
 }
 
 /** The background palette from the CSS tokens, read again when the theme changes. */

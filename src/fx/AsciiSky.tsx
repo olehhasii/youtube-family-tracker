@@ -8,7 +8,8 @@ export default function AsciiSky({ onReady }: { onReady: () => void }) {
     <GradientASCII
       onReady={onReady}
       shape="horizon"
-      colors={[palette['--bg-top'], palette['--bg-middle'], palette['--bg-bottom'], palette['--bg-glow']]}
+      colors={palette.ramp}
+      glyphGain={palette.glyphGain}
       characters=" ·:+*oO@"
       fontFamily='"Tektur Variable", ui-monospace, monospace'
       cellSize={16}
