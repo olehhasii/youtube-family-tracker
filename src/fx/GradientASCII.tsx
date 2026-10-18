@@ -49,6 +49,7 @@ export interface GradientASCIIProps extends Omit<HTMLAttributes<HTMLDivElement>,
   calmStrength?: number;
   glyphGain?: number;
   glyphLight?: number;
+  sunHeight?: number;
   onReady?: () => void;
 }
 
@@ -80,6 +81,7 @@ type Settings = {
   calmStrength: number;
   glyphGain: number;
   glyphLight: number;
+  sunHeight: number;
 };
 
 type Program = { program: WebGLProgram; uniforms: Record<string, WebGLUniformLocation | null> };
@@ -145,6 +147,7 @@ uniform float uRadius;
 uniform vec4 uClicks[4];
 uniform int uClickEffect;
 uniform float uIntro;
+uniform float uSunY;
 uniform float uFrame;
 in vec2 vUv;
 layout(location = 0) out vec4 outColor;
@@ -193,7 +196,7 @@ vec3 horizon(vec2 p, float time, out float order) {
   float soft = mix(0.05, 0.22, uSoftness);
   float edge = p.y - arch;
   float rim = 0.38 * smoothstep(-soft, 0.42, edge);
-  vec2 sun = vec2(0.08 * sin(time * 0.31) * span, 0.58);
+  vec2 sun = vec2(0.08 * sin(time * 0.31) * span, uSunY);
   float spread = length((p - sun) / vec2(0.95 * span, 0.75));
   float sky = mix(0.55, 1.0, smoothstep(0.2, 0.95, spread));
   order = clamp(edge * 1.3, 0.0, 1.0);
@@ -551,6 +554,7 @@ const GradientASCII = ({
   calmStrength = 0,
   glyphGain = 1,
   glyphLight = 0.55,
+  sunHeight = 0.58,
   onReady,
   className = '',
   style,
@@ -587,7 +591,8 @@ const GradientASCII = ({
     calmSelector,
     calmStrength,
     glyphGain,
-    glyphLight
+    glyphLight,
+    sunHeight
   };
   const onReadyRef = useRef(onReady);
   onReadyRef.current = onReady;
@@ -760,6 +765,7 @@ const GradientASCII = ({
       gl.uniform4fv(fu.uClicks, clickData);
       gl.uniform1i(fu.uClickEffect, s.clickEffect);
       gl.uniform1f(fu.uIntro, introClock);
+      gl.uniform1f(fu.uSunY, s.sunHeight);
       gl.uniform1f(fu.uFrame, frameSeed);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
 
