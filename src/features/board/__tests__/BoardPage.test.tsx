@@ -2,7 +2,18 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest'
 import type { BoardTables } from '../../../data/board'
-import { deleteLatestPayment, fetchBoardTables, isSignedIn, recordPayment } from '../../../data/queries'
+import {
+  addMember,
+  deleteLatestPayment,
+  deleteMember,
+  fetchBoardTables,
+  isSignedIn,
+  recordPayment,
+  removeAvatar,
+  saveGroup,
+  updateMember,
+  uploadAvatar,
+} from '../../../data/queries'
 import '../../../i18n/index'
 import { renderWithProviders } from '../../../test/render'
 import { TOAST_MS } from '../../../shared/lib/motion'
@@ -15,7 +26,15 @@ vi.mock('../../../data/queries', () => ({
   onSignedInChange: vi.fn(() => () => {}),
   recordPayment: vi.fn(),
   deleteLatestPayment: vi.fn(),
+  saveGroup: vi.fn(),
+  addMember: vi.fn(),
+  updateMember: vi.fn(),
+  deleteMember: vi.fn(),
+  uploadAvatar: vi.fn(),
+  removeAvatar: vi.fn(),
 }))
+// jsdom has no canvas to shrink photos with
+vi.mock('../../admin/helpers/shrink-image', () => ({ shrinkImage: vi.fn(async () => new Blob(['photo'], { type: 'image/webp' })) }))
 
 const member = (slug: string, position: number, exempt = false) => ({
   id: `id-${slug}`,
@@ -181,6 +200,17 @@ describe('BoardPage', () => {
       await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument())
     })
 
+    const openAs = async (admin: boolean) => {
+      vi.mocked(fetchBoardTables).mockResolvedValue(board)
+      vi.mocked(isSignedIn).mockResolvedValue(admin)
+      const user = userEvent.setup()
+      renderWithProviders(<BoardPage />)
+      await screen.findByRole('button', { name: /^Sasha/ })
+      // the admin controls appear once the session is known
+      if (admin) await screen.findByRole('button', { name: 'Додати учасника' })
+      return { user }
+    }
+
     const openSashaAsAdmin = async () => {
       vi.mocked(fetchBoardTables).mockResolvedValue(board)
       vi.mocked(isSignedIn).mockResolvedValue(true)
@@ -219,6 +249,105 @@ describe('BoardPage', () => {
 
       expect(deleteLatestPayment).not.toHaveBeenCalled()
       await waitFor(() => expect(deleteLatestPayment).toHaveBeenCalledWith('id-sasha', 'sasha-2026-05'), { timeout: TOAST_MS + 1000 })
+    })
+    test('a signed-out visitor gets no way to edit Members or the Group', async () => {
+      const { user } = await openAs(false)
+      expect(screen.queryByRole('button', { name: 'Додати учасника' })).not.toBeInTheDocument()
+      expect(screen.queryByRole('button', { name: 'Редагувати групу' })).not.toBeInTheDocument()
+      await user.click(screen.getByRole('button', { name: /^Sasha/ }))
+      expect(within(await screen.findByRole('region', { name: 'Sasha' })).queryByRole('button', { name: /Редагувати/ })).not.toBeInTheDocument()
+    })
+
+    test('renames a Member from their Member Page', async () => {
+      vi.mocked(updateMember).mockResolvedValue()
+      const { user, detail } = await openSashaAsAdmin()
+      await user.click(within(detail).getByRole('button', { name: 'Редагувати: Sasha' }))
+      const sheet = await screen.findByRole('dialog', { name: 'Редагувати · Sasha' })
+
+      const name = within(sheet).getByRole('textbox', { name: 'Ім’я' })
+      await user.clear(name)
+      await user.type(name, '  Sasha K ')
+      await user.click(within(sheet).getByRole('button', { name: 'Зберегти' }))
+
+      expect(updateMember).toHaveBeenCalledWith('id-sasha', { name: 'Sasha K', exempt: false })
+      expect(uploadAvatar).not.toHaveBeenCalled()
+      expect(await screen.findByRole('status')).toHaveTextContent('Sasha K збережено')
+    })
+
+    test('adds a Member at the end, with a slug made from their name', async () => {
+      vi.mocked(addMember).mockResolvedValue('id-new')
+      const { user } = await openAs(true)
+      await user.click(screen.getByRole('button', { name: 'Додати учасника' }))
+      const sheet = await screen.findByRole('dialog', { name: 'Новий учасник' })
+
+      await user.type(within(sheet).getByRole('textbox', { name: 'Ім’я' }), 'Дар’я')
+      await user.click(within(sheet).getByRole('button', { name: 'Додати' }))
+
+      expect(addMember).toHaveBeenCalledWith({ name: 'Дар’я', exempt: false, slug: 'daria', position: 3 })
+      expect(await screen.findByRole('status')).toHaveTextContent('Дар’я додано')
+    })
+
+    test('a new photo is uploaded, then saved, and only then the old one goes', async () => {
+      vi.mocked(fetchBoardTables).mockResolvedValue({
+        ...board,
+        members: board.members.map((m) => (m.slug === 'sasha' ? { ...m, avatar_path: 'id-sasha/old.webp' } : m)),
+      })
+      vi.mocked(isSignedIn).mockResolvedValue(true)
+      vi.mocked(uploadAvatar).mockResolvedValue('id-sasha/new.webp')
+      vi.mocked(updateMember).mockResolvedValue()
+      vi.mocked(removeAvatar).mockResolvedValue()
+      const user = userEvent.setup()
+      renderWithProviders(<BoardPage />)
+      await user.click(await screen.findByRole('button', { name: /^Sasha/ }))
+      await user.click(within(await screen.findByRole('region', { name: 'Sasha' })).getByRole('button', { name: 'Редагувати: Sasha' }))
+      const sheet = await screen.findByRole('dialog', { name: 'Редагувати · Sasha' })
+
+      await user.upload(within(sheet).getByLabelText('Змінити фото'), new File(['big'], 'me.jpg', { type: 'image/jpeg' }))
+      await user.click(within(sheet).getByRole('button', { name: 'Зберегти' }))
+
+      await waitFor(() => expect(removeAvatar).toHaveBeenCalledWith('id-sasha/old.webp'))
+      expect(uploadAvatar).toHaveBeenCalledWith('id-sasha', expect.any(Blob))
+      expect(updateMember).toHaveBeenLastCalledWith('id-sasha', { avatar_path: 'id-sasha/new.webp' })
+      expect(vi.mocked(updateMember).mock.invocationCallOrder.at(-1)).toBeLessThan(vi.mocked(removeAvatar).mock.invocationCallOrder[0])
+    })
+
+    test('deleting asks again, naming the Payments that go with the Member', async () => {
+      vi.mocked(deleteMember).mockResolvedValue()
+      const { user, detail } = await openSashaAsAdmin()
+      await user.click(within(detail).getByRole('button', { name: 'Редагувати: Sasha' }))
+      const sheet = await screen.findByRole('dialog', { name: 'Редагувати · Sasha' })
+
+      await user.click(within(sheet).getByRole('button', { name: 'Видалити учасника' }))
+      expect(deleteMember).not.toHaveBeenCalled()
+      await user.click(within(sheet).getByRole('button', { name: 'Видалити Sasha і 2 платежі?' }))
+
+      expect(deleteMember).toHaveBeenCalledWith('id-sasha')
+      expect(await screen.findByRole('status')).toHaveTextContent('Sasha видалено')
+    })
+
+    test('turning Exempt off says where payments will start', async () => {
+      const { user } = await openAs(true)
+      await user.click(screen.getByRole('button', { name: /^Oleh/ }))
+      await user.click(within(await screen.findByRole('region', { name: 'Oleh' })).getByRole('button', { name: 'Редагувати: Oleh' }))
+      const sheet = await screen.findByRole('dialog', { name: 'Редагувати · Oleh' })
+
+      await user.click(within(sheet).getByRole('switch', { name: /Не платить/ }))
+      expect(within(sheet).getByText('Перший платіж почнеться з цього місяця.')).toBeInTheDocument()
+    })
+
+    test('edits the Group from the stage', async () => {
+      vi.mocked(saveGroup).mockResolvedValue()
+      const { user } = await openAs(true)
+      await user.click(screen.getByRole('button', { name: 'Редагувати групу' }))
+      const sheet = await screen.findByRole('dialog', { name: 'Група' })
+
+      const price = within(sheet).getByRole('textbox', { name: 'Ціна на місяць' })
+      await user.clear(price)
+      await user.type(price, '349,50')
+      await user.click(within(sheet).getByRole('button', { name: 'Зберегти' }))
+
+      expect(saveGroup).toHaveBeenCalledWith({ name: 'Family Premium', monthly_price: 349.5, currency: 'UAH' })
+      expect(await screen.findByRole('status')).toHaveTextContent('Групу збережено')
     })
   })
 })

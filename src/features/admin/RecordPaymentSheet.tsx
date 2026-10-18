@@ -10,6 +10,7 @@ import { toLanguage } from '../../shared/lib/locale'
 import { useSettleToast, useToast } from '../../shared/toast/use-toast'
 import { MonthStrip } from './components/MonthStrip'
 import { RollingCount } from './components/RollingCount'
+import { Sheet } from './components/Sheet'
 
 const MAX_MONTHS = 12
 
@@ -52,45 +53,33 @@ export function RecordPaymentSheet({ row, today, onClose }: Props) {
   }
 
   return (
-    <Drawer.Root
-      open={row !== null}
-      onOpenChange={(open) => !open && onClose()}
-      onOpenChangeComplete={(open) => !open && setMonths(1)}
-    >
-      <Drawer.Portal>
-        <Drawer.Backdrop className="fixed inset-0 z-100 min-h-dvh bg-shade opacity-[calc(0.6*(1-var(--drawer-swipe-progress)))] transition-opacity duration-450 ease-drawer data-ending-style:opacity-0 data-starting-style:opacity-0 data-swiping:duration-0" />
-        <Drawer.Viewport className="fixed inset-0 z-100 flex items-end justify-center">
-          <Drawer.Popup className="w-full max-w-110 rounded-t-card border-t border-border bg-card px-5 pt-3 pb-[calc(1.25rem+env(safe-area-inset-bottom))] text-fg outline-none transform-[translateY(var(--drawer-swipe-movement-y))] transition-transform duration-450 ease-drawer data-ending-style:transform-[translateY(100%)] data-starting-style:transform-[translateY(100%)] data-swiping:select-none motion-reduce:transition-opacity motion-reduce:data-ending-style:transform-none motion-reduce:data-ending-style:opacity-0 motion-reduce:data-starting-style:transform-none motion-reduce:data-starting-style:opacity-0">
-            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-fg/20" aria-hidden />
-            {lastRow && range && (
-              <Drawer.Content>
-                <Drawer.Title className="font-display text-lg font-bold tracking-[-0.02em]">{t('admin.sheetTitle', { name: lastRow.member.name })}</Drawer.Title>
-                <Drawer.Description className="mt-1 text-sm text-muted">{t('admin.sheetHint')}</Drawer.Description>
+    <Sheet open={row !== null} onClose={onClose} onClosed={() => setMonths(1)}>
+      {lastRow && range && (
+        <Drawer.Content>
+          <Drawer.Title className="font-display text-lg font-bold tracking-[-0.02em]">{t('admin.sheetTitle', { name: lastRow.member.name })}</Drawer.Title>
+          <Drawer.Description className="mt-1 text-sm text-muted">{t('admin.sheetHint')}</Drawer.Description>
 
-                <div className="mt-6 flex items-center justify-between rounded-2xl bg-fg/5 p-2">
-                  <StepButton label={t('admin.fewer')} disabled={months === 1} onClick={() => setMonths((m) => m - 1)}>
-                    −
-                  </StepButton>
-                  <div className="text-center" aria-live="polite">
-                    <RollingCount months={months} />
-                    <p className="text-sm text-muted">{describePaymentMonths({ firstMonth: range.first, months }, lng)}</p>
-                  </div>
-                  <StepButton label={t('admin.more')} disabled={months === MAX_MONTHS} onClick={() => setMonths((m) => m + 1)}>
-                    +
-                  </StepButton>
-                </div>
+          <div className="mt-6 flex items-center justify-between rounded-2xl bg-fg/5 p-2">
+            <StepButton label={t('admin.fewer')} disabled={months === 1} onClick={() => setMonths((m) => m - 1)}>
+              −
+            </StepButton>
+            <div className="text-center" aria-live="polite">
+              <RollingCount months={months} />
+              <p className="text-sm text-muted">{describePaymentMonths({ firstMonth: range.first, months }, lng)}</p>
+            </div>
+            <StepButton label={t('admin.more')} disabled={months === MAX_MONTHS} onClick={() => setMonths((m) => m + 1)}>
+              +
+            </StepButton>
+          </div>
 
-                <MonthStrip first={range.first} months={months} length={MAX_MONTHS} lng={lng} />
+          <MonthStrip first={range.first} months={months} length={MAX_MONTHS} lng={lng} />
 
-                <button className="mt-6 h-12 w-full rounded-full bg-primary font-semibold text-primary-fg press" onClick={() => void submit()}>
-                  {t('admin.record', { count: months })}
-                </button>
-              </Drawer.Content>
-            )}
-          </Drawer.Popup>
-        </Drawer.Viewport>
-      </Drawer.Portal>
-    </Drawer.Root>
+          <button className="mt-6 h-12 w-full rounded-full bg-primary font-semibold text-primary-fg press" onClick={() => void submit()}>
+            {t('admin.record', { count: months })}
+          </button>
+        </Drawer.Content>
+      )}
+    </Sheet>
   )
 }
 

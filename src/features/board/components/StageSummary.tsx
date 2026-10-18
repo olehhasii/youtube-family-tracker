@@ -4,8 +4,11 @@ import { useTranslation } from 'react-i18next'
 import type { Board } from '../../../data/board'
 import { LOCALE, toLanguage } from '../../../shared/lib/locale'
 import { cardEntrance } from '../../../shared/lib/motion'
+import { IconPencil } from '../../../shared/ui/icons'
 
-export function StageSummary({ board: { rows, summary }, group }: { board: Board; group: NonNullable<Board['group']> }) {
+type Props = { board: Board; group: NonNullable<Board['group']>; onEdit?: () => void }
+
+export function StageSummary({ board: { rows, summary }, group, onEdit }: Props) {
   const { t, i18n } = useTranslation()
   const lng = toLanguage(i18n.resolvedLanguage)
   const reduce = useReducedMotion()
@@ -16,9 +19,16 @@ export function StageSummary({ board: { rows, summary }, group }: { board: Board
   return (
     <motion.section data-fx-calm aria-labelledby={title} {...cardEntrance(reduce)} className="relative text-on-sky [text-shadow:0_2px_24px_rgb(10_60_100/0.3)]">
       <p className="text-[12.5px] font-medium opacity-80">{t('stage.members', { count: rows.length })}</p>
-      <h1 id={title} className="mt-1 font-display text-[clamp(26px,7.5vw,34px)] leading-tight font-bold tracking-[-0.03em] lg:text-[clamp(34px,3.6vw,56px)]">
-        {group.name}
-      </h1>
+      <div className="mt-1 flex items-center gap-2">
+        <h1 id={title} className="min-w-0 font-display text-[clamp(26px,7.5vw,34px)] leading-tight font-bold tracking-[-0.03em] lg:text-[clamp(34px,3.6vw,56px)]">
+          {group.name}
+        </h1>
+        {onEdit && (
+          <button className="grid size-9 shrink-0 place-items-center rounded-full bg-on-sky/15 press-round" aria-label={t('group.edit')} onClick={onEdit}>
+            <IconPencil />
+          </button>
+        )}
+      </div>
       <dl className="mt-4 flex gap-3.5 lg:mt-12 lg:flex-col lg:gap-4">
         <Stat label={t('stage.paidUp')} big={summary.paying > 0}>
           {summary.paying ? (

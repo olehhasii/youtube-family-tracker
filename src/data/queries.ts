@@ -65,14 +65,17 @@ function changedSomething({ data, error }: { data: unknown[] | null; error: Erro
   if (!data?.length) throw new Error('Nothing was changed. Is the Admin signed in?')
 }
 
-export async function updateGroup(changes: Tables['groups']['Update']) {
+/** Creates the Group on its first save. */
+export async function saveGroup(group: Omit<Tables['groups']['Insert'], 'id'>) {
   // the Group is a single row whose id is always `true`
-  changedSomething(await supabase.from('groups').update(changes).eq('id', true).select('id'))
+  changedSomething(await supabase.from('groups').upsert({ ...group, id: true }).select('id'))
 }
 
-export async function addMember(member: Tables['members']['Insert']) {
-  const { error } = await supabase.from('members').insert(member)
+/** Returns the new Member's id. */
+export async function addMember(member: Tables['members']['Insert']): Promise<string> {
+  const { data, error } = await supabase.from('members').insert(member).select('id').single()
   if (error) throw error
+  return data.id
 }
 
 export async function updateMember(id: string, changes: Tables['members']['Update']) {
@@ -81,4 +84,17 @@ export async function updateMember(id: string, changes: Tables['members']['Updat
 
 export async function deleteMember(id: string) {
   changedSomething(await supabase.from('members').delete().eq('id', id).select('id'))
+}
+
+/** Uploads a new file (never overwrites, so the old photo stays valid until the Member points elsewhere); returns its path. */
+export async function uploadAvatar(memberId: string, image: Blob): Promise<string> {
+  const path = `${memberId}/${Date.now()}.${image.type.split('/')[1] ?? 'webp'}`
+  const { error } = await supabase.storage.from('avatars').upload(path, image, { contentType: image.type })
+  if (error) throw error
+  return path
+}
+
+export async function removeAvatar(path: string) {
+  const { error } = await supabase.storage.from('avatars').remove([path])
+  if (error) throw error
 }

@@ -19,9 +19,10 @@ type Props = {
   onClose: () => void
   onRecord?: () => void
   onRemoveLatest?: () => void
+  onEdit?: () => void
 }
 
-export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose, onRecord, onRemoveLatest }: Props) {
+export function DetailCard({ row: { member, standing, payments }, wording, lng, currentYear, onClose, onRecord, onRemoveLatest, onEdit }: Props) {
   const { t } = useTranslation()
   const reduce = useReducedMotion()
   const close = useRef<HTMLButtonElement>(null)
@@ -101,10 +102,23 @@ export function DetailCard({ row: { member, standing, payments }, wording, lng, 
             </ol>
           </>
         )}
-        {onRecord && (
-          <button className="mt-3 h-12 w-full rounded-full bg-primary font-semibold text-primary-fg press" onClick={onRecord}>
-            {t('admin.recordPayment')}
-          </button>
+        {(onRecord || onEdit) && (
+          <div className="mt-3 flex gap-2">
+            {onRecord && (
+              <button className="h-12 flex-1 rounded-full bg-primary font-semibold text-primary-fg press" onClick={onRecord}>
+                {t('admin.recordPayment')}
+              </button>
+            )}
+            {onEdit && (
+              <button
+                className={`h-12 rounded-full bg-fg/10 px-5 font-semibold press ${onRecord ? '' : 'flex-1'}`}
+                aria-label={t('admin.editFor', { name: member.name })}
+                onClick={onEdit}
+              >
+                {t('admin.edit')}
+              </button>
+            )}
+          </div>
         )}
       </motion.div>
     </motion.section>

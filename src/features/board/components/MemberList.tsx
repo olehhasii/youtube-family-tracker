@@ -1,4 +1,4 @@
-import { AnimatePresence, LayoutGroup, motion } from 'motion/react'
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from 'motion/react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { BoardRow } from '../../../data/board'
@@ -8,17 +8,25 @@ import type { Day } from '../../../model/types'
 import { describePaymentMonths } from '../../../shared/lib/describe-payment'
 import { describeStanding } from '../../../shared/lib/describe-standing'
 import { toLanguage } from '../../../shared/lib/locale'
-import { viewExit } from '../../../shared/lib/motion'
+import { rowEntrance, viewExit } from '../../../shared/lib/motion'
 import { useToast } from '../../../shared/toast/use-toast'
+import { IconPlus } from '../../../shared/ui/icons'
 import { DetailCard } from './DetailCard'
 import { MemberRow } from './MemberRow'
 
-type Props = { rows: BoardRow[]; today: Day; onRecord: (memberId: string) => void }
+type Props = {
+  rows: BoardRow[]
+  today: Day
+  onRecord: (memberId: string) => void
+  onEdit: (memberId: string) => void
+  onAdd: () => void
+}
 
-export function MemberList({ rows, today, onRecord }: Props) {
+export function MemberList({ rows, today, onRecord, onEdit, onAdd }: Props) {
   const { t, i18n } = useTranslation()
   const lng = toLanguage(i18n.resolvedLanguage)
   const admin = useAdmin()
+  const reduce = useReducedMotion()
   const removeLatestPayment = useRemoveLatestPayment()
   const toast = useToast()
   const [openId, setOpenId] = useState<string | null>(null)
@@ -65,6 +73,7 @@ export function MemberList({ rows, today, onRecord }: Props) {
             onClose={close}
             onRecord={recordFor(opened)}
             onRemoveLatest={admin ? () => removeLatest(opened) : undefined}
+            onEdit={admin ? () => onEdit(opened.member.id) : undefined}
           />
         ) : (
           <motion.ul key="list" className="flex flex-col gap-1.5" exit={{ opacity: 0 }} transition={viewExit}>
@@ -79,6 +88,14 @@ export function MemberList({ rows, today, onRecord }: Props) {
                 onRecord={recordFor(row)}
               />
             ))}
+            {admin && (
+              <motion.li {...rowEntrance(reduce, rows.length)} className="rounded-row outline-[1.5px] -outline-offset-[1.5px] outline-fg/20 outline-dashed">
+                <button className="flex w-full items-center justify-center gap-2 rounded-[inherit] p-4 font-medium text-muted press" onClick={onAdd}>
+                  <IconPlus />
+                  {t('admin.addMember')}
+                </button>
+              </motion.li>
+            )}
           </motion.ul>
         )}
       </AnimatePresence>

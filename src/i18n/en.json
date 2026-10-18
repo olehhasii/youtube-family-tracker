@@ -81,6 +81,47 @@
     "removeLabel": "Remove payment: {{months}}",
     "removed": "{{name}} · {{months}} removed",
     "undo": "Undo",
-    "removeFailed": "Couldn't remove {{name}}'s payment"
+    "removeFailed": "Couldn't remove {{name}}'s payment",
+    "edit": "Edit",
+    "editFor": "Edit {{name}}",
+    "addMember": "Add Member"
+  },
+  "member": {
+    "titleNew": "New Member",
+    "titleEdit": "Edit · {{name}}",
+    "name": "Name",
+    "exempt": "Doesn't pay",
+    "exemptHint": "For example, the subscription owner.",
+    "resumeBehind_one": "Payments continue from {{month}}: {{name}} will be {{count}} month behind straight away.",
+    "resumeBehind_other": "Payments continue from {{month}}: {{name}} will be {{count}} months behind straight away.",
+    "resumeOnTime": "Payments continue from {{month}}.",
+    "resumeFirst": "The first payment will start this month.",
+    "choosePhoto": "Choose photo",
+    "changePhoto": "Change photo",
+    "removePhoto": "Remove photo",
+    "photoUnreadable": "Couldn't open that photo.",
+    "add": "Add",
+    "save": "Save",
+    "delete": "Delete Member",
+    "confirmDelete_one": "Delete {{name}} and their {{count}} payment?",
+    "confirmDelete_other": "Delete {{name}} and their {{count}} payments?",
+    "confirmDeleteNoPayments": "Delete {{name}}?",
+    "added": "{{name}} added",
+    "saved": "{{name}} saved",
+    "saveFailed": "Couldn't save {{name}}",
+    "photoFailed": "{{name}} saved, but the photo didn't upload",
+    "deleted": "{{name}} deleted",
+    "deleteFailed": "Couldn't delete {{name}}"
+  },
+  "group": {
+    "edit": "Edit the group",
+    "setUp": "Set up the group",
+    "title": "Group",
+    "name": "Name",
+    "price": "Monthly price",
+    "currency": "Currency",
+    "save": "Save",
+    "saved": "Group saved",
+    "saveFailed": "Couldn't save the group"
   }
 }

@@ -6,6 +6,8 @@ import { Background } from '../../fx/Background'
 import { Curtain } from '../../fx/Curtain'
 import { useReveal } from '../../fx/use-reveal'
 import { RADIUS, cardEntrance, layoutSpring } from '../../shared/lib/motion'
+import { GroupSheet } from '../admin/GroupSheet'
+import { MemberSheet } from '../admin/MemberSheet'
 import { RecordPaymentSheet } from '../admin/RecordPaymentSheet'
 import { Island } from '../island/Island'
 import { BoardBody } from './components/BoardBody'
@@ -16,6 +18,9 @@ export function BoardPage() {
   const board = useBoard()
   const admin = useAdmin()
   const [recordingId, setRecordingId] = useState<string | null>(null)
+  // a Member's id, or 'new' to add one
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingGroup, setEditingGroup] = useState(false)
   const entrance = cardEntrance(reduce)
   const [backgroundReady, setBackgroundReady] = useState(false)
   const onBackgroundReady = useCallback(() => setBackgroundReady(true), [])
@@ -27,7 +32,7 @@ export function BoardPage() {
       <Background revealed={revealed} onReady={onBackgroundReady} />
       {revealed && (
         <>
-          <Stage board={board.data} />
+          <Stage board={board.data} onEditGroup={() => setEditingGroup(true)} />
           <div className="relative -mt-12 flex justify-center px-safe pb-[calc(9rem+env(safe-area-inset-bottom))] lg:mt-0 lg:min-h-dvh lg:items-center lg:px-0 lg:pt-16">
             <motion.main
               layout={!reduce}
@@ -36,7 +41,7 @@ export function BoardPage() {
               className="w-full max-w-150 bg-card p-4 shadow-card lg:max-w-none"
               style={{ borderRadius: RADIUS.card }} // inline so Motion can correct it while the card resizes
             >
-              <BoardBody board={board} onRecord={setRecordingId} />
+              <BoardBody board={board} onRecord={setRecordingId} onEdit={setEditingId} onAdd={() => setEditingId('new')} />
             </motion.main>
           </div>
           <Island board={board.data} />
@@ -44,11 +49,21 @@ export function BoardPage() {
       )}
       <Curtain shown={!revealed} />
       {board.data && (
-        <RecordPaymentSheet
-          row={(admin && board.data.rows.find((r) => r.member.id === recordingId)) || null} // closes if the session ends
-          today={board.data.today}
-          onClose={() => setRecordingId(null)}
-        />
+        <>
+          {/* each closes if the session ends */}
+          <RecordPaymentSheet
+            row={(admin && board.data.rows.find((r) => r.member.id === recordingId)) || null}
+            today={board.data.today}
+            onClose={() => setRecordingId(null)}
+          />
+          <MemberSheet
+            target={admin ? (editingId === 'new' ? 'new' : board.data.rows.find((r) => r.member.id === editingId) || null) : null}
+            members={board.data.rows.map((r) => r.member)}
+            today={board.data.today}
+            onClose={() => setEditingId(null)}
+          />
+          <GroupSheet open={admin && editingGroup} group={board.data.group} onClose={() => setEditingGroup(false)} />
+        </>
       )}
     </div>
   )
