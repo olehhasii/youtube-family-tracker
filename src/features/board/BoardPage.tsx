@@ -33,7 +33,7 @@ export function BoardPage() {
       {revealed && (
         <>
           <Stage board={board.data} onEditGroup={() => setEditingGroup(true)} />
-          <div className="relative -mt-12 flex justify-center px-safe pb-[calc(9rem+env(safe-area-inset-bottom))] lg:mt-0 lg:min-h-dvh lg:items-center lg:px-0 lg:pt-16">
+          <div className="relative -mt-12 flex justify-center px-safe pb-[calc(6rem+env(safe-area-inset-bottom))] lg:mt-0 lg:min-h-dvh lg:items-center lg:px-0 lg:pt-16">
             <motion.main
               layout={!reduce}
               {...entrance}

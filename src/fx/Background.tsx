@@ -29,7 +29,7 @@ export function Background({ revealed, onReady }: { revealed: boolean; onReady: 
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed inset-0"
+      className="pointer-events-none fixed inset-x-0 top-0 h-lvh" // the large viewport, so it reaches under the toolbars of mobile Safari
       initial={{ opacity: 0 }}
       animate={{ opacity: drawn ? 1 : 0 }}
       transition={revealed ? backgroundLateFade : { duration: 0 }}

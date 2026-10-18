@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react'
 
-export type Palette = { ramp: string[]; fill: number; glyphGain: number; glyphLight: number }
+export type Palette = {
+  ramp: string[]
+  fill: number
+  glyphGain: number
+  glyphLight: number
+  /** On a tall screen: where the glow's sun sits, and how much the glyphs calm behind the stage. */
+  portrait: { sunHeight: number; calm: number }
+}
 
 const read = (): Palette => {
   const style = getComputedStyle(document.documentElement)
@@ -9,6 +16,10 @@ const read = (): Palette => {
     fill: Number(style.getPropertyValue('--bg-fill')) || 1,
     glyphGain: Number(style.getPropertyValue('--bg-glyph-gain')) || 1,
     glyphLight: Number(style.getPropertyValue('--bg-glyph-light')) || 0.55,
+    portrait: {
+      sunHeight: Number(style.getPropertyValue('--bg-portrait-sun')) || 0.58,
+      calm: Number(style.getPropertyValue('--bg-portrait-calm')) || 0.75,
+    },
   }
 }
 

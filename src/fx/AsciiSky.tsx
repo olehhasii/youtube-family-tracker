@@ -5,14 +5,12 @@ import { usePortrait } from './use-portrait'
 /** The background: a glow of palette colours drawn as Tektur glyphs, scrambling under a mouse. Lazy-loaded by `Background`. */
 export default function AsciiSky({ onReady }: { onReady: () => void }) {
   const palette = usePalette()
-  // on a phone the sky is only the strip the stage sits in: the glow moves up into it, and the calm zone, which
-  // would cover all of it, eases off (the stage's text shadow carries the contrast)
   const portrait = usePortrait()
   return (
     <GradientASCII
       onReady={onReady}
       shape="horizon"
-      sunHeight={portrait ? 1.4 : 0.58}
+      sunHeight={portrait ? palette.portrait.sunHeight : 0.58}
       colors={palette.ramp}
       glyphGain={palette.glyphGain}
       glyphLight={palette.glyphLight}
@@ -32,7 +30,7 @@ export default function AsciiSky({ onReady }: { onReady: () => void }) {
       clickEffect="none"
       mouseInteraction={window.matchMedia('(hover: hover) and (pointer: fine)').matches}
       calmSelector="[data-fx-calm]"
-      calmStrength={portrait ? 0.3 : 0.75}
+      calmStrength={portrait ? palette.portrait.calm : 0.75}
     />
   )
 }

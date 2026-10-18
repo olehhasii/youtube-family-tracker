@@ -5,7 +5,7 @@ import { viewExit } from '../shared/lib/motion'
 export function Curtain({ shown }: { shown: boolean }) {
   return (
     <AnimatePresence>
-      {shown && <motion.div aria-hidden className="fixed inset-0 z-105 bg-[var(--bg-top)]" exit={{ opacity: 0 }} transition={viewExit} />}
+      {shown && <motion.div aria-hidden className="fixed inset-x-0 top-0 z-105 h-lvh bg-[var(--bg-top)]" exit={{ opacity: 0 }} transition={viewExit} />}
     </AnimatePresence>
   )
 }

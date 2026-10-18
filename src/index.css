@@ -17,6 +17,10 @@
   --bg-fill: 0.45;
   --bg-glyph-gain: 7;
   --bg-glyph-light: 2.2;
+  /* on a phone the sky is only the strip the stage sits in: the dark glow moves up into it, and the calm zone, which
+     would cover all of it, eases off (the stage's text shadow carries the contrast against dark glyphs) */
+  --bg-portrait-sun: 1.4;
+  --bg-portrait-calm: 0.3;
   --on-sky: #ffffff;
 
   --page: var(--bg-top);
@@ -54,6 +58,9 @@
   --bg-fill: 1;
   --bg-glyph-gain: 1;
   --bg-glyph-light: 0.55;
+  /* light's glow is cream, so it stays off the strip with the white stage text */
+  --bg-portrait-sun: 0.58;
+  --bg-portrait-calm: 0.75;
 
   --page: var(--bg-middle);
   --card: #fbf5e8;
@@ -169,6 +176,8 @@
 
 /* Mobile baseline (see the mobile-native skill) */
 html {
+  /* what iOS Safari shows under its translucent bars and on overscroll: the colour at the top of the sky */
+  background-color: var(--bg-top);
   -webkit-tap-highlight-color: transparent;
   -webkit-text-size-adjust: 100%;
   overscroll-behavior: none;
